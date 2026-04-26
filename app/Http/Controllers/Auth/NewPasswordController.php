@@ -21,7 +21,7 @@ class NewPasswordController extends Controller
      */
     public function create(Request $request): View
     {
-        return view('auth.reset-password', ['request' => $request]);
+        return view('auth.resetPassword', ['request' => $request]);
     }
 
     /**
@@ -31,6 +31,7 @@ class NewPasswordController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // dd($request->all());
         $request->validate([
             'token' => ['required'],
             'email' => ['required', 'email'],

@@ -3,7 +3,7 @@
     <div class="m-header">
       <a href="../dashboard/index.html" class="b-brand text-primary">
         <!-- ========   Change your logo from here   ============ -->
-        <img src="../assets/images/logo-dark.svg" class="img-fluid logo-lg" alt="logo">
+        <img src="{{ asset('templates/dist/assets/images/logo-e-perpus-kuy-hori.png') }}" class="img-fluid" style="max-height:80px;" alt="logo">
       </a>
     </div>
     <div class="navbar-content">
@@ -16,46 +16,40 @@
         </li>
 
         <li class="pc-item pc-caption">
-          <label>UI Components</label>
+          <label>Master Data</label>
           <i class="ti ti-dashboard"></i>
         </li>
         <li class="pc-item">
-          <a href="../elements/bc_typography.html" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-typography"></i></span>
-            <span class="pc-mtext">Typography</span>
+          <a href="" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-user"></i></span>
+            <span class="pc-mtext">User</span>
           </a>
         </li>
         <li class="pc-item">
-          <a href="../elements/bc_color.html" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-color-swatch"></i></span>
-            <span class="pc-mtext">Color</span>
-          </a>
-        </li>
-        <li class="pc-item">
-          <a href="../elements/icon-tabler.html" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-plant-2"></i></span>
-            <span class="pc-mtext">Icons</span>
+          <a href="" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-book"></i></span>
+            <span class="pc-mtext">Book</span>
           </a>
         </li>
 
         <li class="pc-item pc-caption">
-          <label>Pages</label>
+          <label>Transaction</label>
           <i class="ti ti-news"></i>
         </li>
         <li class="pc-item">
           <a href="../pages/login.html" class="pc-link">
             <span class="pc-micon"><i class="ti ti-lock"></i></span>
-            <span class="pc-mtext">Login</span>
+            <span class="pc-mtext">Loans</span>
           </a>
         </li>
-        <li class="pc-item">
+        {{-- <li class="pc-item">
           <a href="../pages/register.html" class="pc-link">
             <span class="pc-micon"><i class="ti ti-user-plus"></i></span>
             <span class="pc-mtext">Register</span>
           </a>
-        </li>
+        </li> --}}
 
-        <li class="pc-item pc-caption">
+        {{-- <li class="pc-item pc-caption">
           <label>Other</label>
           <i class="ti ti-brand-chrome"></i>
         </li>
@@ -99,17 +93,17 @@
             <span class="pc-micon"><i class="ti ti-brand-chrome"></i></span>
             <span class="pc-mtext">Sample page</span>
           </a>
-        </li>
+        </li> --}}
       </ul>
-      <div class="card text-center">
+      {{-- <div class="card text-center">
         <div class="card-body">
-          <img src="../assets/images/img-navbar-card.png" alt="images" class="img-fluid mb-2">
+          <img src="{{ asset('templates/dist/assets/images/img-navbar-card.png') }}" alt="images" class="img-fluid mb-2">
           <h5>Upgrade To Pro</h5>
           <p>To get more features and components</p>
           <a href="https://codedthemes.com/item/berry-bootstrap-5-admin-template/" target="_blank"
           class="btn btn-success">Buy Now</a>
         </div>
-      </div>
+      </div> --}}
     </div>
   </div>
 </nav>

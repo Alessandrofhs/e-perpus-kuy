@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <!-- [Head] start -->
 
 <head>
-  <title>Sign up | E-Perpus-Kuy</title>
+  <title>Reset Password | E-Perpus-Kuy</title>
   <!-- [Meta] -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -13,7 +14,7 @@
   <meta name="author" content="CodedThemes">
 
   <!-- [Favicon] icon -->
-<link rel="icon" href="{{ asset('templates/dist/assets/images/favicon.svg') }}" type="image/x-icon"> <!-- [Google Font] Family -->
+  <link rel="icon" href="{{ asset('templates/dist/assets/images/favicon.svg') }}" type="image/x-icon"> <!-- [Google Font] Family -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
 <!-- [Tabler Icons] https://tablericons.com -->
 <link rel="stylesheet" href="{{ asset('templates/dist/assets/fonts/tabler-icons.min.css') }}" >
@@ -39,100 +40,53 @@
     </div>
   </div>
   <!-- [ Pre-loader ] End -->
-<form action="{{ route('register.process') }}" method="POST">
+<form action="{{ route('password.store') }}" method="POST">
   @csrf
+  <input type="hidden" name="token" value="{{ request()->route('token') }}">
+  <input type="hidden" name="email" value="{{ request()->email }}">
   <div class="auth-main">
     <div class="auth-wrapper v3">
-        <div class="auth-form">
-          <div class="auth-header">
-            <a href="#"><img src="{{ asset('templates/dist/assets/images/logo-dark.svg') }}" alt="img"></a>
-          </div>
-          <div class="card my-5">
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-end mb-4">
-                <h3 class="mb-0"><b>Sign up</b></h3>
-                <a href="{{ route('login') }}" class="link-primary">Already have an account?</a>
-              </div>
-              <div class="row">
-                <div class="form-group mb-3">
-                  <label class="form-label"> Full Name*</label>
-                  <input type="text" class="form-control" name="name" placeholder="Full Name">
-                </div>
-              </div>
-              <div class="form-group mb-3">
-                <label class="form-label">Major</label>
-                <select name="major" class="form-control">
-                  <option value="" disabled selected>Select Major</option>
-                  <option value="tkp">Teknik Kimia Polimer</option>
-                  <option value="siio">Sistem Informasi Industri Otomotif</option>
-                  <option value="tio">Teknik Industri Otomotif</option>
-                  <option value="tro">Teknik Rekayasa Otomotif</option>
-                  <option value="abo">Administasi Bisnis Otomotif</option>
-                </select>
-              </div>
-              <div class="form-group mb-3">
-                <label class="form-label">Email Address*</label>
-                <input type="email" class="form-control" name="email"placeholder="Email Address">
-              </div>
-              <div class="form-group mb-3">
-                <label class="form-label">Password</label>
-                <input type="password" class="form-control" name="password" placeholder="Password">
-              </div>
-              <div class="form-group mb-3">
-                <label class="form-label">Confirm Password</label>
-                <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm Password">
-              </div>
-              <p class="mt-4 text-sm text-muted">By Signing up, you agree to our <a href="#" class="text-primary"> Terms of Service </a> and <a href="#" class="text-primary"> Privacy Policy</a></p>
-              <div class="d-grid mt-3">
-                <button type="submit" class="btn btn-primary">Create Account</button>
-              </div>
-              <div class="saprator mt-3">
-                <span>Sign up with</span>
-              </div>
-              <div class="row">
-                <div class="col-4">
-                  <div class="d-grid">
-                    <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                      <img src="{{ asset('templates/dist/assets/images/authentication/google.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Google</span>
-                    </button>
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="d-grid">
-                    <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                      <img src="{{ asset('templates/dist/assets/images/authentication/twitter.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Twitter</span>
-                    </button>
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="d-grid">
-                    <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                      <img src="{{ asset('templates/dist/assets/images/authentication/facebook.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Facebook</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
+      <div class="auth-form">
+        <div class="auth-header">
+          <a href="#"><img src="{{ asset('templates/dist/assets/images/logo-dark.svg') }}" alt="img"></a>
+        </div>
+        <div class="card my-5">
+          <div class="card-body">
+            <div class="mb-4">
+              <h3 class="mb-2"><b>Reset Password</b></h3>
+              <p class="text-muted">Please choose your new password</p>
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" class="form-control" name="password" placeholder="Password">
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Confirm Password</label>
+              <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm Password">
+            </div>
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-primary">Reset Password</button>
             </div>
           </div>
-          <div class="auth-footer row">
-            <!-- <div class=""> -->
-              <div class="col my-1">
-                <p class="m-0">Copyright © <a href="#">Codedthemes</a></p>
-              </div>
-              <div class="col-auto my-1">
-                <ul class="list-inline footer-link mb-0">
-                  <li class="list-inline-item"><a href="#">Home</a></li>
-                  <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
-                  <li class="list-inline-item"><a href="#">Contact us</a></li>
-                </ul>
-              </div>
-            <!-- </div> -->
-          </div>
         </div>
+        <div class="auth-footer row">
+          <!-- <div class=""> -->
+            <div class="col my-1">
+              <p class="m-0">Copyright © <a href="#">Codedthemes</a></p>
+            </div>
+            <div class="col-auto my-1">
+              <ul class="list-inline footer-link mb-0">
+                <li class="list-inline-item"><a href="#">Home</a></li>
+                <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+                <li class="list-inline-item"><a href="#">Contact us</a></li>
+              </ul>
+            </div>
+          <!-- </div> -->
+        </div>
+      </div>
     </div>
   </div>
-  </form>
+</form>
   <!-- [ Main Content ] end -->
   <!-- Required Js -->
   <script src="{{ asset('templates/dist/assets/js/plugins/popper.min.js') }}"></script>
@@ -294,8 +248,8 @@
           <div class="collapse show" id="pctcustcollapse4">
             <div class="pct-content">
               <div class="theme-color themepreset-color boxwidthpreset theme-container">
-                <a href="#!" class="active" onclick="change_box_container('false')" data-value="false"><span><img src="{{ asset('templates/dist/assets/images/customization/default.svg') }}" alt="img"></span><span>Fluid</span></a>
-                <a href="#!" class="" onclick="change_box_container('true')" data-value="true"><span><img src="{{ asset('templates/dist/assets/images/customization/container.svg') }}" alt="img"></span><span>Container</span></a>
+                <a href="#!" class="active" onclick="change_box_container('false')" data-value="false"><span><img src="{{ asset('assets/images/customization/default.svg') }}" alt="img"></span><span>Fluid</span></a>
+                <a href="#!" class="" onclick="change_box_container('true')" data-value="true"><span><img src="{{ asset('assets/images/customization/container.svg') }}" alt="img"></span><span>Container</span></a>
               </div>
             </div>
           </div>

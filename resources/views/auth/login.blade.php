@@ -39,15 +39,14 @@
     </div>
   </div>
   <!-- [ Pre-loader ] End -->
-
+<form action="{{ route('login.process') }}" method="POST">
+  @csrf
   <div class="auth-main">
     <div class="auth-wrapper v3">
       <div class="auth-form">
         <div class="auth-header">
           <a href="#"><img src="{{ asset('templates/dist/assets/images/logo-dark.svg') }}" alt="img"></a>
         </div>
-        <form action="{{ route('login') }}" method="POST">
-            @csrf
             <div class="card my-5">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-end mb-4">
@@ -56,11 +55,11 @@
                     </div>
                     <div class="form-group mb-3">
                     <label class="form-label">Email Address</label>
-                    <input type="email" class="form-control" placeholder="Email Address">
+                    <input type="email" class="form-control" placeholder="Email Address" name="email" value="{{ old('email') }}" required autofocus>
                     </div>
                     <div class="form-group mb-3">
                     <label class="form-label">Password</label>
-                    <input type="password" class="form-control" placeholder="Password">
+                    <input type="password" class="form-control" placeholder="Password" name="password" required autocomplete="current-password">
                     </div>
                     <div class="d-flex mt-1 justify-content-between">
                     <div class="form-check">
@@ -72,37 +71,37 @@
                         </a>
                     </div>
                     <div class="d-grid mt-4">
-                    <button type="button" class="btn btn-primary">Login</button>
+                    <button type="submit" class="btn btn-primary">Login</button>
                     </div>
-                    <div class="saprator mt-3">
+                    <div class="saprator mt-4">
                     <span>Login with</span>
                     </div>
                     <div class="row">
-                    <div class="col-4">
+                      <div class="col-4">
+                          <div class="d-grid">
+                          <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
+                              <img src="{{ asset('templates/dist/assets/images/authentication/google.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Google</span>
+                          </button>
+                          </div>
+                      </div>
+                      <div class="col-4">
+                          <div class="d-grid">
+                          <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
+                              <img src="{{ asset('templates/dist/assets/images/authentication/twitter.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Twitter</span>
+                          </button>
+                          </div>
+                      </div>
+                      <div class="col-4">
                         <div class="d-grid">
-                        <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                            <img src="{{ asset('templates/dist/assets/images/authentication/google.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Google</span>
-                        </button>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="d-grid">
-                        <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                            <img src="{{ asset('templates/dist/assets/images/authentication/twitter.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Twitter</span>
-                        </button>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="d-grid">
-                        <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
+                          <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
                             <img src="{{ asset('templates/dist/assets/images/authentication/facebook.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Facebook</span>
-                        </button>
+                          </button>
                         </div>
-                    </div>
+                      </div>
                     </div>
                 </div>
                 </div>
-        </form>
+        
         
         <div class="auth-footer row">
           <!-- <div class=""> -->
@@ -121,6 +120,7 @@
       </div>
     </div>
   </div>
+</form>
   <!-- [ Main Content ] end -->
   <!-- Required Js -->
   <script src="{{ asset('templates/dist/assets/js/plugins/popper.min.js') }}"></script>
@@ -157,3 +157,5 @@
 <!-- [Body] end -->
 
 </html>
+
+              

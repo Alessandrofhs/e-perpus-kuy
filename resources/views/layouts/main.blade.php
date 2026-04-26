@@ -27,6 +27,8 @@
 <!-- [Template CSS Files] -->
 <link rel="stylesheet" href="{{ asset('templates/dist/assets/css/style.css') }}" id="main-style-link" >
 <link rel="stylesheet" href="{{ asset('templates/dist/assets/css/style-preset.css') }}" >
+{{-- Datatable --}}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
 
 </head>
 <!-- [Head] end -->
@@ -53,6 +55,7 @@
   <!-- [ Main Content ] end -->
   @include('partials.footer')
 
+  @yield('scripts')
   <!-- [Page Specific JS] start -->
   <script src="{{ asset('templates/dist/assets/js/plugins/apexcharts.min.js') }}"></script>
   <script src="{{ asset('templates/dist/assets/js/pages/dashboard-default.js') }}"></script>
@@ -64,6 +67,8 @@
   <script src="{{ asset('templates/dist/assets/js/fonts/custom-font.js') }}"></script>
   <script src="{{ asset('templates/dist/assets/js/pcoded.js') }}"></script>
   <script src="{{ asset('templates/dist/assets/js/plugins/feather.min.js') }}"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
   
   

@@ -66,7 +66,7 @@
                 <a class="list-group-item list-group-item-action">
                 <div class="d-flex">
                     <div class="flex-shrink-0">
-                    <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
+                    <img src="{{ asset('templates/dist/assets/images/user/avatar-2.jpg') }}" alt="user-image" class="user-avtar">
                     </div>
                     <div class="flex-grow-1 ms-1">
                     <span class="float-end text-muted">3:00 AM</span>
@@ -78,7 +78,7 @@
                 <a class="list-group-item list-group-item-action">
                 <div class="d-flex">
                     <div class="flex-shrink-0">
-                    <img src="../assets/images/user/avatar-1.jpg" alt="user-image" class="user-avtar">
+                    <img src="{{ asset('templates/dist/assets/images/user/avatar-1.jpg') }}" alt="user-image" class="user-avtar">
                     </div>
                     <div class="flex-grow-1 ms-1">
                     <span class="float-end text-muted">6:00 PM</span>
@@ -90,7 +90,7 @@
                 <a class="list-group-item list-group-item-action">
                 <div class="d-flex">
                     <div class="flex-shrink-0">
-                    <img src="../assets/images/user/avatar-3.jpg" alt="user-image" class="user-avtar">
+                    <img src="{{ asset('templates/dist/assets/images/user/avatar-3.jpg') }}" alt="user-image" class="user-avtar">
                     </div>
                     <div class="flex-grow-1 ms-1">
                     <span class="float-end text-muted">2:45 PM</span>
@@ -102,7 +102,7 @@
                 <a class="list-group-item list-group-item-action">
                 <div class="d-flex">
                     <div class="flex-shrink-0">
-                    <img src="../assets/images/user/avatar-4.jpg" alt="user-image" class="user-avtar">
+                    <img src="{{ asset('templates/dist/assets/images/user/avatar-3.jpg') }}" alt="user-image" class="user-avtar">
                     </div>
                     <div class="flex-grow-1 ms-1">
                     <span class="float-end text-muted">9:10 PM</span>
@@ -129,14 +129,14 @@
             data-bs-auto-close="outside"
             aria-expanded="false"
         >
-            <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
+            <img src="{{ asset('templates/dist/assets/images/user/avatar-2.jpg') }}" alt="user-image" class="user-avtar">
             <span>Stebin Ben</span>
         </a>
         <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
             <div class="dropdown-header">
             <div class="d-flex mb-1">
                 <div class="flex-shrink-0">
-                <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
+                <img src="{{ asset('templates/dist/assets/images/user/avatar-2.jpg') }}" alt="user-image" class="user-avtar wid-35">
                 </div>
                 <div class="flex-grow-1 ms-3">
                 <h6 class="mb-1">Stebin Ben</h6>
@@ -191,9 +191,14 @@
                 <i class="ti ti-wallet"></i>
                 <span>Billing</span>
                 </a>
-                <a href="#!" class="dropdown-item">
-                <i class="ti ti-power"></i>
-                <span>Logout</span>
+                <form action="{{ route('logout') }}" method="POST" id="logout-form">
+                    @csrf
+                </form>
+
+                <a href="#" class="dropdown-item"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="ti ti-power"></i>
+                    <span>Logout</span>
                 </a>
             </div>
             <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2" tabindex="0">
