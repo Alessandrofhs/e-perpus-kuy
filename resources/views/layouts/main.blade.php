@@ -14,7 +14,7 @@
   <meta name="author" content="CodedThemes">
 
   <!-- [Favicon] icon -->
-  <link rel="icon" href="{{ asset('templates/dist/assets/images/favicon.svg') }}" type="image/x-icon"> <!-- [Google Font] Family -->
+  <link rel="icon" href="{{ asset('templates/dist/assets/images/logo-e-perpus-mini.png') }}" type="image/x-icon"> <!-- [Google Font] Family -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
 <!-- [Tabler Icons] https://tablericons.com -->
 <link rel="stylesheet" href="{{ asset('templates/dist/assets/fonts/tabler-icons.min.css') }}" >
@@ -29,6 +29,7 @@
 <link rel="stylesheet" href="{{ asset('templates/dist/assets/css/style-preset.css') }}" >
 {{-- Datatable --}}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 
 </head>
 <!-- [Head] end -->
@@ -55,7 +56,6 @@
   <!-- [ Main Content ] end -->
   @include('partials.footer')
 
-  @yield('scripts')
   <!-- [Page Specific JS] start -->
   <script src="{{ asset('templates/dist/assets/js/plugins/apexcharts.min.js') }}"></script>
   <script src="{{ asset('templates/dist/assets/js/pages/dashboard-default.js') }}"></script>
@@ -69,6 +69,8 @@
   <script src="{{ asset('templates/dist/assets/js/plugins/feather.min.js') }}"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  @yield('scripts')
 
   
   

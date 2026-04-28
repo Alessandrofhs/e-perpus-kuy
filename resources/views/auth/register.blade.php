@@ -13,7 +13,7 @@
   <meta name="author" content="CodedThemes">
 
   <!-- [Favicon] icon -->
-<link rel="icon" href="{{ asset('templates/dist/assets/images/favicon.svg') }}" type="image/x-icon"> <!-- [Google Font] Family -->
+<link rel="icon" href="{{ asset('templates/dist/assets/images/logo-e-perpus-mini.png') }}" type="image/x-icon"> <!-- [Google Font] Family -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
 <!-- [Tabler Icons] https://tablericons.com -->
 <link rel="stylesheet" href="{{ asset('templates/dist/assets/fonts/tabler-icons.min.css') }}" >
@@ -45,7 +45,7 @@
     <div class="auth-wrapper v3">
         <div class="auth-form">
           <div class="auth-header">
-            <a href="#"><img src="{{ asset('templates/dist/assets/images/logo-dark.svg') }}" alt="img"></a>
+            <a href="#"><img src="{{ asset('templates/dist/assets/images/logo-e-perpus-kuy-hori.png') }}" alt="img" style="width: 180px"></a>
           </div>
           <div class="card my-5">
             <div class="card-body">

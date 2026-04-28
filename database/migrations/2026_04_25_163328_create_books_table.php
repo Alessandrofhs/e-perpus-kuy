@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('publisher');
             $table->date('published_year');
             $table->integer('qty');
+            $table->string('cover')->nullable();
             $table->timestamps();
         });
     }
