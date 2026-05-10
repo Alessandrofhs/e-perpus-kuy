@@ -49,4 +49,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+     public function loans()
+    {
+        return $this->hasMany(Loan::class, 'user_id');
+    }
+
+    // Loan yang di-approve admin
+    public function approvedLoans()
+    {
+        return $this->hasMany(Loan::class, 'approved_by');
+    }
 }

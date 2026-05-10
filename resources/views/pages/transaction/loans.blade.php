@@ -1,5 +1,5 @@
 @extends('layouts.main')
-@section('title', 'Books Maintenance')
+@section('title', 'Loans Maintenance')
 @section('content')
 <div class="pc-content">
       <!-- [ breadcrumb ] start -->
@@ -8,11 +8,11 @@
           <div class="row align-items-center">
             <div class="col-md-12">
               <div class="page-header-title">
-                <h5 class="m-b-10">Books</h5>
+                <h5 class="m-b-10">Loans</h5>
               </div>
               <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="../dashboard/index.html">Books</a></li>
-                <li class="breadcrumb-item"><a href="javascript: void(0)">Books</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Loans</a></li>
+                <li class="breadcrumb-item"><a href="javascript: void(0)">Loans</a></li>
                 <li class="breadcrumb-item" aria-current="page">Data</li>
               </ul>
             </div>
@@ -26,10 +26,10 @@
           <div class="col-sm-12">
             <div class="card">
               <div class="card-header">
-                <h5>Book Maintenance</h5>
+                <h5>Loan Maintenance</h5>
                 <br>
                 <button class="btn btn-primary btn-sm float-right" id="btnAdd">
-                  <i class="ti ti-plus"></i> Add Book
+                  <i class="ti ti-plus"></i> Add Loan
                 </button>
               </div>
               <div class="card-body">
@@ -38,23 +38,23 @@
                     <thead>
                       <tr>
                         <th>No</th>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Publisher</th>
-                        <th>Year</th>
-                        <th>Qty</th>
+                        <th>Book</th>
+                        <th>Borrower</th>
+                        <th>Officer</th>
+                        <th>Loan Date</th>
+                        <th>Return Date</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($books as $book)
+                      @foreach ($loans as $loan)
                       <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $book->title }}</td>
-                        <td>{{ $book->author }}</td>
-                        <td>{{ $book->publisher }}</td>
-                        <td>{{ \Carbon\Carbon::parse($book->published_year)->format('Y') }}</td>
-                        <td>{{ $book->qty }}</td>
+                        <td>{{ $loan->book->title }}</td>
+                        <td>{{ $loan->user->name }}</td>
+                        <td>{{ $loan->approver->name }}</td>
+                        <td>{{ \Carbon\Carbon::parse($loan->loan_date)->format('dd-mm-yyyy') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($loan->return_date)->format('dd-mm-yyyy') }}</td>
                         <td>
                           <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $book->id }}">
                             <i class="ti ti-edit"></i> Edit

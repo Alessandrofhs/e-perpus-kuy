@@ -37,6 +37,7 @@
                   <table id="dataTable" class="table table-striped table-bordered nowrap">
                     <thead>
                       <tr>
+                        <th>No</th>
                         <th>Name</th>
                         <th>Major</th>
                         <th>Email</th>
@@ -47,6 +48,7 @@
                     <tbody>
                       @foreach ($users as $user)
                       <tr>
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->major }}</td>
                         <td>{{ $user->email }}</td>
