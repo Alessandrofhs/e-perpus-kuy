@@ -56,4 +56,20 @@ class BookController extends Controller
             'message' => 'Book deleted successfully.'
         ]);
     }
+    public function search(Request $request)
+    {
+        $search = $request->q;
+
+        $query = Book::query();
+
+        if ($search) {
+            $query->where('title', 'LIKE', "%{$search}%");
+        }
+
+        $books = $query->select('id', 'title')
+                    ->limit(10)
+                    ->get();
+
+        return response()->json($books);
+    }
 }

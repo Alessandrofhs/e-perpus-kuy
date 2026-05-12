@@ -79,31 +79,20 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title" id="bookModalTitle">Add Book</h5>
+                    <h5 class="modal-title" id="bookModalTitle">Add Loan</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body">
                     <form id="bookForm" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" id="book_id" name="id">
-
-                    <!-- Cover -->
-                    <div class="mb-3 text-center">
-                        <img id="previewCover"
-                            src="/default-book.png"
-                            style="width:120px;height:160px;object-fit:cover;cursor:pointer;border-radius:8px;">
-
-                        <input type="file" id="cover" name="cover" class="d-none" accept="image/*">
-
-                        <div>
-                        <small>klik buat ganti cover</small>
-                        </div>
-                    </div>
+                    <input type="hidden" id="loan_id" name="id">                  
 
                     <!-- Title -->
                     <div class="mb-2">
-                        <input type="text" id="title" name="title" class="form-control" placeholder="Title" required>
+                        <select id="book_id" name="book_id" class="form-control" required>
+                            <option value="">Pilih Buku</option>
+                        </select>
                     </div>
 
                     <!-- Author -->
@@ -143,6 +132,7 @@
     </div>
 @endsection
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
   $(document).ready(function() {
     $('#dataTable').DataTable({
@@ -275,6 +265,34 @@
 
         }
       });
+    });
+    $('#title').select2({
+        placeholder: 'Cari Book...',
+        allowClear: true,
+        width: '100%',
+
+        ajax: {
+          url: "{{ route('books.search') }}",
+          dataType: 'json',
+          delay: 250,
+
+          data: function (params) {
+              return {
+                  q: params.term || ''
+              };
+          },
+
+          processResults: function (data) {
+              return {
+                  results: $.map(data, function (item) {
+                      return {
+                          id: item.id,
+                          text: item.title
+                      };
+                  })
+              };
+          }
+      }
     });
   });
 </script>
