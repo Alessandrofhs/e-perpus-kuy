@@ -1,7 +1,7 @@
 <nav class="pc-sidebar">
   <div class="navbar-wrapper">
     <div class="m-header">
-      <a href="../dashboard/index.html" class="b-brand text-primary">
+      <a href="{{ route('dashboard') }}" class="b-brand text-primary">
         <!-- ========   Change your logo from here   ============ -->
         <img src="{{ asset('templates/dist/assets/images/logo-e-perpus-kuy-hori.png') }}" class="img-fluid" style="max-height:80px;" alt="logo">
       </a>
@@ -9,28 +9,30 @@
     <div class="navbar-content">
       <ul class="pc-navbar">
         <li class="pc-item">
-          <a href="../dashboard/index.html" class="pc-link">
+          <a href="{{ route('dashboard') }}" class="pc-link">
             <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
             <span class="pc-mtext">Dashboard</span>
           </a>
         </li>
 
+        @if(Auth::user()->role == 'admin')
         <li class="pc-item pc-caption">
           <label>Master Data</label>
-          <i class="ti ti-dashboard"></i>
+        <i class="ti ti-dashboard"></i>
         </li>
-        <li class="pc-item">
-          <a href="{{ route('users.index') }}" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-user"></i></span>
-            <span class="pc-mtext">User</span>
-          </a>
-        </li>
-        <li class="pc-item">
-          <a href="{{ route('books.index') }}" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-book"></i></span>
-            <span class="pc-mtext">Book</span>
-          </a>
-        </li>
+          <li class="pc-item">
+            <a href="{{ route('users.index') }}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-user"></i></span>
+              <span class="pc-mtext">Pengguna</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="{{ route('books.index') }}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-book"></i></span>
+              <span class="pc-mtext">Buku</span>
+            </a>
+          </li>
+        @endif
 
         <li class="pc-item pc-caption">
           <label>Transaction</label>
@@ -39,71 +41,16 @@
         <li class="pc-item">
           <a href="{{ route('loans.index') }}" class="pc-link">
             <span class="pc-micon"><i class="ti ti-lock"></i></span>
-            <span class="pc-mtext">Loans</span>
+            <span class="pc-mtext">Peminjaman</span>
           </a>
-        </li>
-        {{-- <li class="pc-item">
-          <a href="../pages/register.html" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-user-plus"></i></span>
-            <span class="pc-mtext">Register</span>
-          </a>
-        </li> --}}
-
-        {{-- <li class="pc-item pc-caption">
-          <label>Other</label>
-          <i class="ti ti-brand-chrome"></i>
-        </li>
-        <li class="pc-item pc-hasmenu">
-          <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">Menu
-              levels</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-          <ul class="pc-submenu">
-            <li class="pc-item"><a class="pc-link" href="#!">Level 2.1</a></li>
-            <li class="pc-item pc-hasmenu">
-              <a href="#!" class="pc-link">Level 2.2<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-              <ul class="pc-submenu">
-                <li class="pc-item"><a class="pc-link" href="#!">Level 3.1</a></li>
-                <li class="pc-item"><a class="pc-link" href="#!">Level 3.2</a></li>
-                <li class="pc-item pc-hasmenu">
-                  <a href="#!" class="pc-link">Level 3.3<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-                  <ul class="pc-submenu">
-                    <li class="pc-item"><a class="pc-link" href="#!">Level 4.1</a></li>
-                    <li class="pc-item"><a class="pc-link" href="#!">Level 4.2</a></li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li class="pc-item pc-hasmenu">
-              <a href="#!" class="pc-link">Level 2.3<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-              <ul class="pc-submenu">
-                <li class="pc-item"><a class="pc-link" href="#!">Level 3.1</a></li>
-                <li class="pc-item"><a class="pc-link" href="#!">Level 3.2</a></li>
-                <li class="pc-item pc-hasmenu">
-                  <a href="#!" class="pc-link">Level 3.3<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-                  <ul class="pc-submenu">
-                    <li class="pc-item"><a class="pc-link" href="#!">Level 4.1</a></li>
-                    <li class="pc-item"><a class="pc-link" href="#!">Level 4.2</a></li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-          </ul>
         </li>
         <li class="pc-item">
-          <a href="../other/sample-page.html" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-brand-chrome"></i></span>
-            <span class="pc-mtext">Sample page</span>
+          <a href="{{ route('returns.index') }}" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-lock"></i></span>
+            <span class="pc-mtext">Pengembalian</span>
           </a>
-        </li> --}}
-      </ul>
-      {{-- <div class="card text-center">
-        <div class="card-body">
-          <img src="{{ asset('templates/dist/assets/images/img-navbar-card.png') }}" alt="images" class="img-fluid mb-2">
-          <h5>Upgrade To Pro</h5>
-          <p>To get more features and components</p>
-          <a href="https://codedthemes.com/item/berry-bootstrap-5-admin-template/" target="_blank"
-          class="btn btn-success">Buy Now</a>
-        </div>
-      </div> --}}
+        </li>
+      </ul> 
     </div>
   </div>
 </nav>

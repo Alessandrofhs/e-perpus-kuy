@@ -11,7 +11,7 @@ class Loan extends Model
         'approved_by',
         'book_id',
         'loan_date',
-        'return_date',
+        'due_date',
         'status',
     ];
     public function user()

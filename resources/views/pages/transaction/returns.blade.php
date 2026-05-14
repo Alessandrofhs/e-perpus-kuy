@@ -28,9 +28,6 @@
               <div class="card-header">
                 <h5>Peminjaman</h5>
                 <br>
-                <button class="btn btn-primary btn-sm float-right" id="btnAdd">
-                  <i class="ti ti-plus"></i> Tambah Pinjaman
-                </button>
               </div>
               <div class="card-body">
                 <div class="dt-responsive table-responsive">
@@ -40,8 +37,9 @@
                         <th>No</th>
                         <th>Buku</th>
                         <th>Peminjam</th>
+                        <th>Petugas</th>
                         <th>Tanggal Pinjam</th>
-                        <th>Tenggat Waktu</th>
+                        <th>Tanggal Kembali</th>
                         <th>Aksi</th>
                       </tr>
                     </thead>
@@ -51,28 +49,16 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $loan->book->title }}</td>
                         <td>{{ $loan->user->name }}</td>
-                        <td>{{ \Carbon\Carbon::parse($loan->loan_date)->format('d M Y') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($loan->due_date)->format('d M Y') }}</td>
+                        <td>{{ $loan->approver->name }}</td>
+                        <td>{{ \Carbon\Carbon::parse($loan->loan_date)->format('dd-mm-yyyy') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($loan->return_date)->format('dd-mm-yyyy') }}</td>
                         <td>
-                          @if (Auth::user()->role == 'member')
-                            <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $loan->id }}">
-                              <i class="ti ti-edit"></i> Ubah
-                            </button>
-                            <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $loan->id }}">
-                              <i class="ti ti-trash"></i> Hapus
-                            </button>
-                            <button class="btn btn-sm btn-primary btn-view" data-id="{{ $loan->id }}">
-                              <i class="ti ti-eye"></i> Lihat
-                            </button>
-                          @endif
-                          @if(Auth::user()->role == 'admin')
-                            <button class="btn btn-sm btn-success btn-approve" data-id="{{ $loan->id }}">
-                              <i class="ti ti-check"></i> Setuju
-                            </button>
-                            <button class="btn btn-sm btn-danger btn-reject" data-id="{{ $loan->id }}">
-                              <i class="ti ti-x"></i> Tolak
-                            </button>
-                          @endif
+                          <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $loan->id }}">
+                            <i class="ti ti-edit"></i> Ubah
+                          </button>
+                          <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $loan->id }}">
+                            <i class="ti ti-trash"></i> Hapus
+                          </button>
                         </td>
                       </tr>
                       @endforeach
@@ -133,15 +119,19 @@
                                name="loan_date"
                                class="form-control">
                     </div>
+
+                    <!-- Tanggal Pengembalian -->
                     <div class="mb-3">
-                        <label for="due_date" class="form-label">Tenggat Waktu</label>
+                        <label for="return_date" class="form-label">
+                            Tanggal Pengembalian
+                        </label>
+
                         <input type="date"
-                              id="due_date"
-                              name="due_date"
-                              class="form-control"
-                              disabled> {{-- Disabled dulu sebelum loan_date dipilih --}}
-                        <small class="text-muted">Pilih antara tanggal pinjam hingga maksimal 7 hari</small>
+                               id="return_date"
+                               name="return_date"
+                               class="form-control">
                     </div>
+
                 </form>
             </div>
 
@@ -150,7 +140,7 @@
                     <i class="fa fa-times" style="font-size:12px;"></i> Tutup
                 </button>
 
-                <button class="btn btn-primary" id="saveLoan" type="button">
+                <button class="btn btn-primary" id="saveLoan">
                     <i class="fa fa-save" style="font-size:12px;"></i> Simpan
                 </button>
             </div>
@@ -192,74 +182,41 @@
     });
 
     $('#saveLoan').click(function (e) {
+
         e.preventDefault();
 
-        // ✅ Validasi sederhana di sisi client
-        if (!$('#book_id').val()) {
-            toastr.error('Pilih buku terlebih dahulu');
-            return;
-        }
-
-        if (!$('#loan_date').val()) {
-            toastr.error('Pilih tanggal pinjam terlebih dahulu');
-            return;
-        }
-
         let id = $('#loan_id').val();
-        let url = id ? '/loans/update/' + id : '/loans/store';
+
+        let url = id
+            ? '/loans/update/' + id
+            : '/loans/store';
 
         $.ajax({
             url: url,
             type: 'POST',
             data: {
                 _token: '{{ csrf_token() }}',
-                book_id:   $('#book_id').val(),
+                book_id: $('#book_id').val(),
                 loan_date: $('#loan_date').val(),
-                due_date:  $('#due_date').val(), // ✅ Terisi otomatis
+                return_date: $('#return_date').val(),
             },
-            success: function (response) {
-                toastr.success(response.message);
-                $('#loanModal').modal('hide');
-                $('#loanForm')[0].reset();
-                $('.select2').val(null).trigger('change');
-                location.reload();
-            },
-            error: function (xhr) {
-                let response = xhr.responseJSON;
 
-                // ✅ Tangkap error validasi Laravel (422)
-                if (xhr.status === 422) {
-                    let errors = response.errors;
-                    $.each(errors, function (key, messages) {
-                        toastr.error(messages[0]);
-                    });
-                } else {
-                    toastr.error(response.message);
-                }
+            success: function (response) {
+
+                alert(response.message);
+
+                $('#loanModal').modal('hide');
+
+                $('#loanForm')[0].reset();
+
+                $('.select2').val(null).trigger('change');
+
+                location.reload();
             }
         });
+
     });
 
-    $('#loan_date').on('change', function () {
-        let loanDate = new Date($(this).val());
-
-        if (!isNaN(loanDate)) {
-            // Hitung batas maksimal: +7 hari
-            let maxDate = new Date(loanDate);
-            maxDate.setDate(maxDate.getDate() + 7);
-
-            // Format ke YYYY-MM-DD
-            let minStr = loanDate.toISOString().split('T')[0];
-            let maxStr = maxDate.toISOString().split('T')[0];
-
-            // ✅ Set min & max, lalu aktifkan input
-            $('#due_date')
-                .attr('min', minStr)
-                .attr('max', maxStr)
-                .val(maxStr)         // Default ke hari maksimal
-                .prop('disabled', false);
-        }
-    });
   });
 </script>
 @endsection

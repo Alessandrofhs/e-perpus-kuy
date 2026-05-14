@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('fines', function (Blueprint $table) {
             $table->id();
             $table->foreignId('loan_id')->constrained()->onDelete('cascade');
-            $table->date('fine_date');
-            $table->integer('amount');
-            $table->string('status');
+            $table->foreignId('return_id')->nullable()->constrained()->onDelete('set null');
+            $table->integer('overdue_days');             // ✅ Berapa hari terlambat
+            $table->integer('fine_per_day');             // ✅ Tarif denda (bisa berubah kebijakan)
+            $table->integer('total_amount');             // ✅ overdue_days × fine_per_day
+            $table->enum('status', ['unpaid', 'paid'])->default('unpaid');
+            $table->timestamp('paid_at')->nullable();
             $table->timestamps();
         });
     }

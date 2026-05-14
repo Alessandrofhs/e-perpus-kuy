@@ -26,6 +26,8 @@
 <!-- [Template CSS Files] -->
 <link rel="stylesheet" href="{{ asset('templates/dist/assets/css/style.css') }}" id="main-style-link" >
 <link rel="stylesheet" href="{{ asset('templates/dist/assets/css/style-preset.css') }}" >
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
 
 </head>
 <!-- [Head] end -->
@@ -51,18 +53,18 @@
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-end mb-4">
                 <h3 class="mb-0"><b>Sign up</b></h3>
-                <a href="{{ route('login') }}" class="link-primary">Already have an account?</a>
+                <a href="{{ route('login') }}" class="link-primary">Sudah mempunyai akun?</a>
               </div>
               <div class="row">
                 <div class="form-group mb-3">
-                  <label class="form-label"> Full Name*</label>
-                  <input type="text" class="form-control" name="name" placeholder="Full Name">
+                  <label class="form-label"> Nama Lengkap*</label>
+                  <input type="text" class="form-control" name="name" placeholder="Nama lengkap" required>
                 </div>
               </div>
               <div class="form-group mb-3">
-                <label class="form-label">Major</label>
+                <label class="form-label">Jurusan</label>
                 <select name="major" class="form-control">
-                  <option value="" disabled selected>Select Major</option>
+                  <option value="" disabled selected>Pilih jurusan</option>
                   <option value="tkp">Teknik Kimia Polimer</option>
                   <option value="siio">Sistem Informasi Industri Otomotif</option>
                   <option value="tio">Teknik Industri Otomotif</option>
@@ -71,48 +73,21 @@
                 </select>
               </div>
               <div class="form-group mb-3">
-                <label class="form-label">Email Address*</label>
-                <input type="email" class="form-control" name="email"placeholder="Email Address">
+                <label class="form-label">Email*</label>
+                <input type="email" class="form-control" name="email"placeholder="Email" required>
               </div>
               <div class="form-group mb-3">
                 <label class="form-label">Password</label>
-                <input type="password" class="form-control" name="password" placeholder="Password">
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
               </div>
               <div class="form-group mb-3">
-                <label class="form-label">Confirm Password</label>
-                <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm Password">
+                <label class="form-label">Konfirmasi Password</label>
+                <input type="password" class="form-control" name="password_confirmation" placeholder="Konfirmasi Password" required>
               </div>
-              <p class="mt-4 text-sm text-muted">By Signing up, you agree to our <a href="#" class="text-primary"> Terms of Service </a> and <a href="#" class="text-primary"> Privacy Policy</a></p>
+              <p class="mt-4 text-sm text-muted">Dengan mendaftar, Anda menyetujui ketentuan kami<a href="#" class="text-primary"> Ketentuan dan Layanan </a> and <a href="#" class="text-primary"> Kebijakan Privasi</a></p>
               <div class="d-grid mt-3">
-                <button type="submit" class="btn btn-primary">Create Account</button>
+                <button type="submit" class="btn btn-primary">Buat Akun</button>
               </div>
-              <div class="saprator mt-3">
-                <span>Sign up with</span>
-              </div>
-              <div class="row">
-                <div class="col-4">
-                  <div class="d-grid">
-                    <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                      <img src="{{ asset('templates/dist/assets/images/authentication/google.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Google</span>
-                    </button>
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="d-grid">
-                    <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                      <img src="{{ asset('templates/dist/assets/images/authentication/twitter.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Twitter</span>
-                    </button>
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="d-grid">
-                    <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                      <img src="{{ asset('templates/dist/assets/images/authentication/facebook.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Facebook</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
             </div>
           </div>
           <div class="auth-footer row">
@@ -141,11 +116,33 @@
   <script src="{{ asset('templates/dist/assets/js/fonts/custom-font.js') }}"></script>
   <script src="{{ asset('templates/dist/assets/js/pcoded.js') }}"></script>
   <script src="{{ asset('templates/dist/assets/js/plugins/feather.min.js') }}"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
+  <script>
+
+  toastr.options = {
+      closeButton: true,
+      progressBar: true,
+      positionClass: "toast-top-right",
+      timeOut: "3000"
+  };
+
+  </script>
   
-  
-  
-  
+    @if ($errors->any())
+
+      <script>
+          $(document).ready(function () {
+
+              @foreach ($errors->all() as $error)
+                  toastr.error(@json($error));
+              @endforeach
+
+          });
+      </script>
+
+  @endif
   <script>layout_change('light');</script>
   
   
@@ -163,184 +160,6 @@
   
   <script>font_change("Public-Sans");</script>
   
-    
- <div class="offcanvas pct-offcanvas offcanvas-end" tabindex="-1" id="offcanvas_pc_layout">
-  <div class="offcanvas-header bg-primary">
-    <h5 class="offcanvas-title text-white">Mantis Customizer</h5>
-    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="pct-body" style="height: calc(100% - 60px)">
-    <div class="offcanvas-body">
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-          <a class="btn border-0 text-start w-100" data-bs-toggle="collapse" href="#pctcustcollapse1">
-            <div class="d-flex align-items-center">
-              <div class="flex-shrink-0">
-                <div class="avtar avtar-xs bg-light-primary">
-                  <i class="ti ti-layout-sidebar f-18"></i>
-                </div>
-              </div>
-              <div class="flex-grow-1 ms-3">
-                <h6 class="mb-1">Theme Layout</h6>
-                <span>Choose your layout</span>
-              </div>
-              <i class="ti ti-chevron-down"></i>
-            </div>
-          </a>
-          <div class="collapse show" id="pctcustcollapse1">
-            <div class="pct-content">
-              <div class="pc-rtl">
-                <p class="mb-1">Direction</p>
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" role="switch" id="layoutmodertl">
-                  <label class="form-check-label" for="layoutmodertl">RTL</label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="list-group-item">
-          <a class="btn border-0 text-start w-100" data-bs-toggle="collapse" href="#pctcustcollapse2">
-            <div class="d-flex align-items-center">
-              <div class="flex-shrink-0">
-                <div class="avtar avtar-xs bg-light-primary">
-                  <i class="ti ti-brush f-18"></i>
-                </div>
-              </div>
-              <div class="flex-grow-1 ms-3">
-                <h6 class="mb-1">Theme Mode</h6>
-                <span>Choose light or dark mode</span>
-              </div>
-              <i class="ti ti-chevron-down"></i>
-            </div>
-          </a>
-          <div class="collapse show" id="pctcustcollapse2">
-            <div class="pct-content">
-              <div class="theme-color themepreset-color theme-layout">
-                <a href="#!" class="active" onclick="layout_change('light')" data-value="false"
-                  ><span><img src="{{ asset('templates/dist/assets/images/customization/default.svg') }}" alt="img"></span><span>Light</span></a
-                >
-                <a href="#!" class="" onclick="layout_change('dark')" data-value="true"
-                  ><span><img src="{{ asset('templates/dist/assets/images/customization/dark.svg') }}" alt="img"></span><span>Dark</span></a
-                >
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="list-group-item">
-          <a class="btn border-0 text-start w-100" data-bs-toggle="collapse" href="#pctcustcollapse3">
-            <div class="d-flex align-items-center">
-              <div class="flex-shrink-0">
-                <div class="avtar avtar-xs bg-light-primary">
-                  <i class="ti ti-color-swatch f-18"></i>
-                </div>
-              </div>
-              <div class="flex-grow-1 ms-3">
-                <h6 class="mb-1">Color Scheme</h6>
-                <span>Choose your primary theme color</span>
-              </div>
-              <i class="ti ti-chevron-down"></i>
-            </div>
-          </a>
-          <div class="collapse show" id="pctcustcollapse3">
-            <div class="pct-content">
-              <div class="theme-color preset-color">
-                <a href="#!" class="active" data-value="preset-1"
-                  ><span><img src="{{ asset('templates/dist/assets/images/customization/theme-color.svg') }}" alt="img"></span><span>Theme 1</span></a
-                >
-                <a href="#!" class="" data-value="preset-2"
-                  ><span><img src="{{ asset('templates/dist/assets/images/customization/theme-color.svg') }}" alt="img"></span><span>Theme 2</span></a
-                >
-                <a href="#!" class="" data-value="preset-3"
-                  ><span><img src="{{ asset('templates/dist/assets/images/customization/theme-color.svg') }}" alt="img"></span><span>Theme 3</span></a
-                >
-                <a href="#!" class="" data-value="preset-4"
-                  ><span><img src="{{ asset('templates/dist/assets/images/customization/theme-color.svg') }}" alt="img"></span><span>Theme 4</span></a
-                >
-                <a href="#!" class="" data-value="preset-5"
-                  ><span><img src="{{ asset('templates/dist/assets/images/customization/theme-color.svg') }}" alt="img"></span><span>Theme 5</span></a
-                >
-                <a href="#!" class="" data-value="preset-6"
-                  ><span><img src="{{ asset('templates/dist/assets/images/customization/theme-color.svg') }}" alt="img"></span><span>Theme 6</span></a
-                >
-                <a href="#!" class="" data-value="preset-7"
-                  ><span><img src="{{ asset('templates/dist/assets/images/customization/theme-color.svg') }}" alt="img"></span><span>Theme 7</span></a
-                >
-                <a href="#!" class="" data-value="preset-8"
-                  ><span><img src="{{ asset('templates/dist/assets/images/customization/theme-color.svg') }}" alt="img"></span><span>Theme 8</span></a
-                >
-                <a href="#!" class="" data-value="preset-9"
-                  ><span><img src="{{ asset('templates/dist/assets/images/customization/theme-color.svg') }}" alt="img"></span><span>Theme 9</span></a
-                >
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="list-group-item pc-boxcontainer">
-          <a class="btn border-0 text-start w-100" data-bs-toggle="collapse" href="#pctcustcollapse4">
-            <div class="d-flex align-items-center">
-              <div class="flex-shrink-0">
-                <div class="avtar avtar-xs bg-light-primary">
-                  <i class="ti ti-border-inner f-18"></i>
-                </div>
-              </div>
-              <div class="flex-grow-1 ms-3">
-                <h6 class="mb-1">Layout Width</h6>
-                <span>Choose fluid or container layout</span>
-              </div>
-              <i class="ti ti-chevron-down"></i>
-            </div>
-          </a>
-          <div class="collapse show" id="pctcustcollapse4">
-            <div class="pct-content">
-              <div class="theme-color themepreset-color boxwidthpreset theme-container">
-                <a href="#!" class="active" onclick="change_box_container('false')" data-value="false"><span><img src="{{ asset('templates/dist/assets/images/customization/default.svg') }}" alt="img"></span><span>Fluid</span></a>
-                <a href="#!" class="" onclick="change_box_container('true')" data-value="true"><span><img src="{{ asset('templates/dist/assets/images/customization/container.svg') }}" alt="img"></span><span>Container</span></a>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="list-group-item">
-          <a class="btn border-0 text-start w-100" data-bs-toggle="collapse" href="#pctcustcollapse5">
-            <div class="d-flex align-items-center">
-              <div class="flex-shrink-0">
-                <div class="avtar avtar-xs bg-light-primary">
-                  <i class="ti ti-typography f-18"></i>
-                </div>
-              </div>
-              <div class="flex-grow-1 ms-3">
-                <h6 class="mb-1">Font Family</h6>
-                <span>Choose your font family.</span>
-              </div>
-              <i class="ti ti-chevron-down"></i>
-            </div>
-          </a>
-          <div class="collapse show" id="pctcustcollapse5">
-            <div class="pct-content">
-              <div class="theme-color fontpreset-color">
-                <a href="#!" class="active" onclick="font_change('Public-Sans')" data-value="Public-Sans"
-                  ><span>Aa</span><span>Public Sans</span></a
-                >
-                <a href="#!" class="" onclick="font_change('Roboto')" data-value="Roboto"><span>Aa</span><span>Roboto</span></a>
-                <a href="#!" class="" onclick="font_change('Poppins')" data-value="Poppins"><span>Aa</span><span>Poppins</span></a>
-                <a href="#!" class="" onclick="font_change('Inter')" data-value="Inter"><span>Aa</span><span>Inter</span></a>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="list-group-item">
-          <div class="collapse show">
-            <div class="pct-content">
-              <div class="d-grid">
-                <button class="btn btn-light-danger" id="layoutreset">Reset Layout</button>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
 </body>
 <!-- [Body] end -->
 

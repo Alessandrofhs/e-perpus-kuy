@@ -26,6 +26,8 @@
 <!-- [Template CSS Files] -->
 <link rel="stylesheet" href="{{ asset('templates/dist/assets/css/style.css') }}" id="main-style-link" >
 <link rel="stylesheet" href="{{ asset('templates/dist/assets/css/style-preset.css') }}" >
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
 
 </head>
 <!-- [Head] end -->
@@ -39,88 +41,62 @@
     </div>
   </div>
   <!-- [ Pre-loader ] End -->
-<form action="{{ route('login.process') }}" method="POST">
-  @csrf
-  <div class="auth-main">
-    <div class="auth-wrapper v3">
-      <div class="auth-form">
-        <div class="auth-header">
-          <a href="#"><img src="{{ asset('templates/dist/assets/images/logo-e-perpus-kuy-hori.png') }}" alt="img" style="width: 180px"></a>
-        </div>
-            <div class="card my-5">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-end mb-4">
-                    <h3 class="mb-0"><b>Login</b></h3>
-                    <a href="{{ route('register') }}" class="link-primary">Don't have an account?</a>
-                    </div>
-                    <div class="form-group mb-3">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" class="form-control" placeholder="Email Address" name="email" value="{{ old('email') }}" required autofocus>
-                    </div>
-                    <div class="form-group mb-3">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-control" placeholder="Password" name="password" required autocomplete="current-password">
-                    </div>
-                    <div class="d-flex mt-1 justify-content-between">
-                    <div class="form-check">
-                        <input class="form-check-input input-primary" type="checkbox" id="customCheckc1" checked="">
-                        <label class="form-check-label text-muted" for="customCheckc1">Keep me sign in</label>
-                    </div>
-                        <a href="{{ route('password.request') }}" class="text-secondary f-w-400 h5">
-                            Forgot Password?
-                        </a>
-                    </div>
-                    <div class="d-grid mt-4">
-                    <button type="submit" class="btn btn-primary">Login</button>
-                    </div>
-                    <div class="saprator mt-4">
-                    <span>Login with</span>
-                    </div>
-                    <div class="row">
-                      <div class="col-4">
-                          <div class="d-grid">
-                          <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                              <img src="{{ asset('templates/dist/assets/images/authentication/google.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Google</span>
-                          </button>
-                          </div>
+  <form action="{{ route('login.process') }}" method="POST">
+    @csrf
+    <div class="auth-main">
+      <div class="auth-wrapper v3">
+        <div class="auth-form">
+          <div class="auth-header">
+            <a href="#"><img src="{{ asset('templates/dist/assets/images/logo-e-perpus-kuy-hori.png') }}" alt="img" style="width: 180px"></a>
+          </div>
+              <div class="card my-5">
+                  <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-end mb-4">
+                      <h3 class="mb-0"><b>Login</b></h3>
+                      <a href="{{ route('register') }}" class="link-primary">Belum memiliki akun?</a>
                       </div>
-                      <div class="col-4">
-                          <div class="d-grid">
-                          <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                              <img src="{{ asset('templates/dist/assets/images/authentication/twitter.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Twitter</span>
-                          </button>
-                          </div>
+                      <div class="form-group mb-3">
+                      <label class="form-label">Email</label>
+                      <input type="email" class="form-control" placeholder="Email" name="email" value="{{ old('email') }}" required autofocus>
                       </div>
-                      <div class="col-4">
-                        <div class="d-grid">
-                          <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                            <img src="{{ asset('templates/dist/assets/images/authentication/facebook.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Facebook</span>
-                          </button>
-                        </div>
+                      <div class="form-group mb-3">
+                      <label class="form-label">Password</label>
+                      <input type="password" class="form-control" placeholder="Password" name="password" required autocomplete="current-password">
                       </div>
-                    </div>
-                </div>
-                </div>
-        
-        
-        <div class="auth-footer row">
-          <!-- <div class=""> -->
-            <div class="col my-1">
-              <p class="m-0">Copyright © <a href="#">Codedthemes</a></p>
-            </div>
-            <div class="col-auto my-1">
-              <ul class="list-inline footer-link mb-0">
-                <li class="list-inline-item"><a href="#">Home</a></li>
-                <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
-                <li class="list-inline-item"><a href="#">Contact us</a></li>
-              </ul>
-            </div>
-          <!-- </div> -->
+                      <div class="d-flex mt-1 justify-content-between">
+                      <div class="form-check">
+                          <input class="form-check-input input-primary" type="checkbox" id="customCheckc1" checked="">
+                          <label class="form-check-label text-muted" for="customCheckc1">Biarkan saya tetap masuk?</label>
+                      </div>
+                          <a href="{{ route('password.request') }}" class="text-secondary f-w-400 h5">
+                              lupa Password?
+                          </a>
+                      </div>
+                      <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                      </div>
+                  </div>
+                  </div>
+          
+          
+          <div class="auth-footer row">
+            <!-- <div class=""> -->
+              <div class="col my-1">
+                <p class="m-0">Copyright © <a href="#">Codedthemes</a></p>
+              </div>
+              <div class="col-auto my-1">
+                <ul class="list-inline footer-link mb-0">
+                  <li class="list-inline-item"><a href="#">Home</a></li>
+                  <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+                  <li class="list-inline-item"><a href="#">Contact us</a></li>
+                </ul>
+              </div>
+            <!-- </div> -->
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</form>
+  </form>
   <!-- [ Main Content ] end -->
   <!-- Required Js -->
   <script src="{{ asset('templates/dist/assets/js/plugins/popper.min.js') }}"></script>
@@ -129,8 +105,19 @@
   <script src="{{ asset('templates/dist/assets/js/fonts/custom-font.js') }}"></script>
   <script src="{{ asset('templates/dist/assets/js/pcoded.js') }}"></script>
   <script src="{{ asset('templates/dist/assets/js/plugins/feather.min.js') }}"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-  
+  <script>
+
+  toastr.options = {
+      closeButton: true,
+      progressBar: true,
+      positionClass: "toast-top-right",
+      timeOut: "3000"
+  };
+
+  </script>
   
   
   
@@ -151,7 +138,17 @@
   
   <script>font_change("Public-Sans");</script>
   
-    
+    @if ($errors->any())
+
+    <script>
+
+        @foreach ($errors->all() as $error)
+            toastr.error("{{ $error }}");
+        @endforeach
+
+    </script>
+
+    @endif
  
 </body>
 <!-- [Body] end -->

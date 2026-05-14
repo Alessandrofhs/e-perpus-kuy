@@ -3,42 +3,90 @@
 namespace App\Http\Controllers;
 
 use App\Models\Loan;
+use App\Models\Book;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 
 class LoanController extends Controller
 {
     public function index() {
         $loans = Loan::with(['user', 'approver', 'book'])->get();
-        return view('pages.transaction.loans', compact('loans'));
+        $books = Book::orderBy('title', 'ASC')->get();
+
+        $borrowers = User::where('role', 'member')
+                        ->orderBy('name', 'ASC')
+                        ->get();
+
+        // User dengan role admin
+        $approvers = User::where('role', 'admin')
+                        ->orderBy('name', 'ASC')
+                        ->get();
+        return view('pages.transaction.loans', compact('loans', 'books', 'borrowers', 'approvers'));
     }
     public function store(Request $request)
     {
         $user = Auth::user();
 
-        // Pastikan hanya member
+        // Validasi role
         if ($user->role !== 'member') {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized'
+                'message' => 'Hanya member yang dapat melakukan peminjaman'
             ], 403);
         }
 
+        // ✅ Tambah validasi due_date
         $validated = $request->validate([
-            'book_id'   => 'required|integer|exists:books,id',
+            'book_id'   => 'required|exists:books,id',
             'loan_date' => 'required|date',
+            'due_date'  => [
+                'required',
+                'date',
+                'after_or_equal:loan_date',                          // ✅ Minimal sama dengan loan_date
+                'before_or_equal:' . Carbon::parse($request->loan_date)->addDays(7)->toDateString(), // ✅ Maksimal +7 hari
+            ],
         ]);
 
+        $book = Book::findOrFail($validated['book_id']);
+
+        // Validasi stok
+        if ($book->qty <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Stok buku sedang habis'
+            ], 400);
+        }
+
+        // ✅ Cek peminjaman aktif yang belum dikembalikan
+        $activeLoan = Loan::where('user_id', $user->id)
+            ->where('book_id', $validated['book_id'])
+            ->whereIn('status', ['pending', 'active'])
+            ->exists();
+
+        if ($activeLoan) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda masih meminjam buku ini'
+            ], 400);
+        }
+
+        // ✅ Simpan dengan due_date
         Loan::create([
-            'user_id'    => $user->id,
-            'book_id'    => $validated['book_id'],
-            'loan_date'  => $validated['loan_date'],
-            'status'     => 'pending',
+            'user_id'   => $user->id,
+            'book_id'   => $validated['book_id'],
+            'loan_date' => $validated['loan_date'],
+            'due_date'  => $validated['due_date'],
+            'status'    => 'pending',
         ]);
+
+        // ✅ Kurangi stok buku
+        $book->decrement('qty');
 
         return response()->json([
             'success' => true,
-            'message' => 'Loan request created successfully'
+            'message' => 'Peminjaman berhasil diajukan, menunggu persetujuan'
         ]);
     }
 

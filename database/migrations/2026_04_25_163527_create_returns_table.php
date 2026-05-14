@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('returns', function (Blueprint $table) {
             $table->id();
             $table->foreignId('loan_id')->constrained()->onDelete('cascade');
-            $table->date('return_date');
+            $table->date('actual_return_date');
             $table->foreignId('received_by')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

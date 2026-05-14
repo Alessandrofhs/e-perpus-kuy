@@ -4,7 +4,7 @@
 <!-- [Head] start -->
 
 <head>
-  <title>Forgot Password | E-Perpus-Kuy</title>
+  <title>Lupa Password | E-Perpus-Kuy</title>
   <!-- [Meta] -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -52,16 +52,16 @@
           <div class="card my-5">
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-end mb-4">
-                <h3 class="mb-0"><b>Forgot Password</b></h3>
-                <a href="{{ route('login') }}" class="link-primary">Back to Login</a>
+                <h3 class="mb-0"><b>Lupa Password</b></h3>
+                <a href="{{ route('login') }}" class="link-primary">Kembali ke Login</a>
               </div>
               <div class="form-group mb-3">
-                <label class="form-label">Email Address</label>
-                <input type="email" class="form-control" id="floatingInput" name="email" placeholder="Email Address">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" id="floatingInput" name="email" placeholder="Email">
               </div>
-              <p class="mt-4 text-sm text-muted">Do not forgot to check SPAM box.</p>
+              <p class="mt-4 text-sm text-muted">Jangan lupa cek folder spam.</p>
               <div class="d-grid mt-3">
-                <button type="submit" class="btn btn-primary">Send Password Reset Email</button>
+                <button type="submit" class="btn btn-primary">Kirim Password Reset Email</button>
               </div>
             </div>
           </div>
