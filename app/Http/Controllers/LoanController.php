@@ -92,35 +92,79 @@ class LoanController extends Controller
 
     public function show($id)
     {
-        $loan = Loan::findOrFail($id);
+        $loan = Loan::with(['book', 'user'])->findOrFail($id);
 
-        $loan->cover_url = $loan->cover 
-            ? asset('storage/' . $loan->cover) 
-            : asset('default-book.png');
-
-        return response()->json($loan);
+        return response()->json([
+            'success' => true,
+            'data'    => $loan
+        ]);
     }
     public function update(Request $request, $id)
     {
         $loan = Loan::findOrFail($id);
 
-        $data = $request->all();
-
-        if($request->hasFile('cover')){
-            $data['cover'] = $request->file('cover')->store('books', 'public');
+        // Hanya bisa edit jika masih pending
+        if ($loan->status !== 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Peminjaman yang sudah diproses tidak dapat diubah'
+            ], 400);
         }
 
-        $loan->update($data);
+        $validated = $request->validate([
+            'book_id'   => 'required|exists:books,id',
+            'loan_date' => 'required|date',
+            'due_date'  => [
+                'required',
+                'date',
+                'after_or_equal:loan_date',
+                'before_or_equal:' . Carbon::parse($request->loan_date)->addDays(7)->toDateString(),
+            ],
+        ]);
 
-        return response()->json(['success' => true]);
+        // Jika buku diganti, kembalikan stok buku lama
+        if ($loan->book_id !== (int) $validated['book_id']) {
+            $loan->book->increment('qty');
+
+            $newBook = Book::findOrFail($validated['book_id']);
+
+            if ($newBook->qty <= 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Stok buku yang dipilih sedang habis'
+                ], 400);
+            }
+
+            $newBook->decrement('qty');
+        }
+
+        $loan->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Peminjaman berhasil diperbarui'
+        ]);
     }
-    public function destroy($id) {
+    public function destroy($id)
+    {
         $loan = Loan::findOrFail($id);
+
+        // Hanya bisa hapus jika masih pending
+        if ($loan->status !== 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Peminjaman yang sudah diproses tidak dapat dihapus'
+            ], 400);
+        }
+
+        // Kembalikan stok buku
+        $loan->book->increment('qty');
+
         $loan->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Loan deleted successfully.'
+            'message' => 'Peminjaman berhasil dihapus'
         ]);
     }
     public function approve($id)

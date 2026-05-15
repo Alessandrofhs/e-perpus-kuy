@@ -42,6 +42,7 @@
                         <th>Peminjam</th>
                         <th>Tanggal Pinjam</th>
                         <th>Tenggat Waktu</th>
+                        <th>Status</th>
                         <th>Aksi</th>
                       </tr>
                     </thead>
@@ -53,6 +54,7 @@
                         <td>{{ $loan->user->name }}</td>
                         <td>{{ \Carbon\Carbon::parse($loan->loan_date)->format('d M Y') }}</td>
                         <td>{{ \Carbon\Carbon::parse($loan->due_date)->format('d M Y') }}</td>
+                        <td>{{ $loan->status }}</td>
                         <td>
                           @if (Auth::user()->role == 'member')
                             <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $loan->id }}">
@@ -131,7 +133,8 @@
                         <input type="date"
                                id="loan_date"
                                name="loan_date"
-                               class="form-control">
+                               class="form-control"
+                               min="{{ date('Y-m-d') }}">
                     </div>
                     <div class="mb-3">
                         <label for="due_date" class="form-label">Tenggat Waktu</label>
@@ -178,7 +181,9 @@
 
         $('#loan_id').val('');
 
-        $('#loanModalTitle').text('Add Loan');
+        $('#due_date').prop('disabled', true).val('');
+
+        $('#loanModalTitle').text('Tambah Pinjaman');
 
         $('#loanModal').modal('show');
 
@@ -236,6 +241,66 @@
                 } else {
                     toastr.error(response.message);
                 }
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-edit', function () {
+        let id = $(this).data('id');
+
+        $.ajax({
+            url  : '/loans/' + id,
+            type : 'GET',
+            success: function (response) {
+                let loan = response.data;
+
+                $('#loan_id').val(loan.id);
+                $('#book_id').val(loan.book_id).trigger('change');
+                $('#loan_date').val(loan.loan_date).trigger('change');
+
+                // Set due_date setelah range terbentuk
+                setTimeout(() => $('#due_date').val(loan.due_date), 100);
+
+                $('#loanModalTitle').text('Ubah Pinjaman');
+                $('#loanModal').modal('show');
+            },
+            error: function () {
+                toastr.error('Gagal mengambil data peminjaman');
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-delete', function () {
+        let id = $(this).data('id');
+
+        Swal.fire({
+            title             : 'Hapus Peminjaman?',
+            text              : 'Data yang dihapus tidak dapat dikembalikan.',
+            icon              : 'warning',
+            showCancelButton  : true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor : '#6c757d',
+            confirmButtonText : 'Ya, Hapus!',
+            cancelButtonText  : 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url : '/loans/delete/' + id,
+                    type: 'POST',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function (response) {
+                        Swal.fire({
+                            title            : 'Terhapus!',
+                            text             : response.message,
+                            icon             : 'success',
+                            timer            : 1500,
+                            showConfirmButton : false
+                        }).then(() => location.reload());
+                    },
+                    error: function (xhr) {
+                        Swal.fire('Gagal!', xhr.responseJSON.message, 'error');
+                    }
+                });
             }
         });
     });

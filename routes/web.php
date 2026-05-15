@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('books', BookController::class);
     
     Route::get('/loans', [LoanController::class, 'index'])->name('loans.index');
+    Route::get('/loans/{id}', [LoanController::class, 'show'])->name('loans.edit');
     Route::post('/loans/store', [LoanController::class, 'store'])->name('loans.store');
     Route::post('/loans/update/{id}', [LoanController::class, 'update'])->name('loans.update');
     Route::post('/loans/approve/{id}', [LoanController::class, 'approve'])->name('loans.approve');
