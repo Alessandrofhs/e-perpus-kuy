@@ -169,26 +169,48 @@ class LoanController extends Controller
     }
     public function approve($id)
     {
-        $user = Auth::user();
-
-        // Pastikan hanya admin
-        if ($user->role !== 'admin') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized'
-            ], 403);
-        }
-
         $loan = Loan::findOrFail($id);
 
+        if ($loan->status !== 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya peminjaman berstatus pending yang dapat disetujui'
+            ], 400);
+        }
+
         $loan->update([
-            'approved_by' => $user->id,
-            'status'      => 'approved',
+            'status'      => 'dipinjam',
+            'approved_by' => Auth::id(),
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Loan approved successfully'
+            'message' => 'Peminjaman berhasil disetujui'
+        ]);
+    }
+
+    public function reject($id)
+    {
+        $loan = Loan::findOrFail($id);
+
+        if ($loan->status !== 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya peminjaman berstatus pending yang dapat ditolak'
+            ], 400);
+        }
+
+        // Kembalikan stok buku
+        $loan->book->increment('qty');
+
+        $loan->update([
+            'status'      => 'ditolak',
+            'approved_by' => Auth::id(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Peminjaman berhasil ditolak'
         ]);
     }
 }

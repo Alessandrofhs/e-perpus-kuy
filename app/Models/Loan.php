@@ -30,4 +30,28 @@ class Loan extends Model
     {
         return $this->belongsTo(Book::class, 'book_id');
     }
+
+    public function Returns()
+    {
+        return $this->hasOne(Returns::class);
+    }
+
+    public function fine()
+    {
+        return $this->hasOne(Fine::class);
+    }
+    public function getOverdueDaysAttribute(): int
+    {
+        if (!in_array($this->status, ['active', 'overdue'])) return 0;
+
+        $due = $this->due_date;
+
+        return today()->gt($due) ? today()->diffInDays($due) : 0;
+    }
+
+    // Hitung total denda real-time (sebelum dikembalikan)
+    public function getTotalFineAttribute(): int
+    {
+        return $this->overdue_days * 1000; // Rp 1.000/hari
+    }
 }

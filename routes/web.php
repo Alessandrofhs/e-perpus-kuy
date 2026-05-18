@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReturnController;
@@ -11,9 +12,9 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/dashboard', function () {
-    return view('pages.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -32,12 +33,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/loans/reject/{id}', [LoanController::class, 'reject'])->name('loans.reject');
     Route::delete('/loans/{id}', [LoanController::class, 'destroy'])->name('loans.destroy');
 
-    Route::get('/returns', [ReturnController::class, 'index'])->name('returns.index');
-    Route::post('/returns/store', [ReturnController::class, 'store'])->name('returns.store');
-    Route::post('/returns/update/{id}', [ReturnController::class, 'update'])->name('returns.update');
-    Route::post('/returns/approve/{id}', [ReturnController::class, 'approve'])->name('returns.approve');
-    Route::post('/returns/reject/{id}', [ReturnController::class, 'reject'])->name('returns.reject');
-    Route::delete('/returns/{id}', [ReturnController::class, 'destroy'])->name('returns.destroy');
+    Route::prefix('returns')->middleware('auth')->group(function () {
+        Route::get('/',        [ReturnController::class, 'index'])->name('returns.index');
+        Route::post('/store',  [ReturnController::class, 'store'])->name('returns.store');
+    });
 });
 
 require __DIR__.'/auth.php';

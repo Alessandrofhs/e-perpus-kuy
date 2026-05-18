@@ -305,6 +305,76 @@
         });
     });
 
+    $(document).on('click', '.btn-approve', function () {
+        let id = $(this).data('id');
+
+        Swal.fire({
+            title             : 'Setujui Peminjaman?',
+            text              : 'Peminjaman akan berstatus aktif.',
+            icon              : 'question',
+            showCancelButton  : true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor : '#6c757d',
+            confirmButtonText : 'Ya, Setujui!',
+            cancelButtonText  : 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url : '/loans/approve/' + id,
+                    type: 'POST',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function (response) {
+                        Swal.fire({
+                            title            : 'Disetujui!',
+                            text             : response.message,
+                            icon             : 'success',
+                            timer            : 1500,
+                            showConfirmButton : false
+                        }).then(() => location.reload());
+                    },
+                    error: function (xhr) {
+                        Swal.fire('Gagal!', xhr.responseJSON.message, 'error');
+                    }
+                });
+            }
+        });
+    });
+
+    // ── REJECT ───────────────────────────────────────────────
+    $(document).on('click', '.btn-reject', function () {
+        let id = $(this).data('id');
+
+        Swal.fire({
+            title             : 'Tolak Peminjaman?',
+            text              : 'Stok buku akan dikembalikan secara otomatis.',
+            icon              : 'warning',
+            showCancelButton  : true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor : '#6c757d',
+            confirmButtonText : 'Ya, Tolak!',
+            cancelButtonText  : 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url : '/loans/reject/' + id,
+                    type: 'POST',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function (response) {
+                        Swal.fire({
+                            title            : 'Ditolak!',
+                            text             : response.message,
+                            icon             : 'success',
+                            timer            : 1500,
+                            showConfirmButton : false
+                        }).then(() => location.reload());
+                    },
+                    error: function (xhr) {
+                        Swal.fire('Gagal!', xhr.responseJSON.message, 'error');
+                    }
+                });
+            }
+        });
+    });
     $('#loan_date').on('change', function () {
         let loanDate = new Date($(this).val());
 

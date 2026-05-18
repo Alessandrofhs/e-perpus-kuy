@@ -59,4 +59,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Loan::class, 'approved_by');
     }
+
+    public function receivedReturns()
+    {
+        return $this->hasMany(Returns::class, 'received_by');
+    }
 }

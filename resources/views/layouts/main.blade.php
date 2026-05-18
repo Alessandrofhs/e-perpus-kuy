@@ -59,7 +59,7 @@
 
   <!-- [Page Specific JS] start -->
   <script src="{{ asset('templates/dist/assets/js/plugins/apexcharts.min.js') }}"></script>
-  <script src="{{ asset('templates/dist/assets/js/pages/dashboard-default.js') }}"></script>
+  @stack('page-scripts')
   <!-- [Page Specific JS] end -->
   <!-- Required Js -->
   <script src="{{ asset('templates/dist/assets/js/plugins/popper.min.js') }}"></script>

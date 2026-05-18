@@ -21,4 +21,8 @@ class Book extends Model
     {
         return $this->hasMany(Loan::class, 'book_id');
     }
+    public function getIsAvailableAttribute(): bool
+    {
+        return $this->qty > 0;
+    }
 }
