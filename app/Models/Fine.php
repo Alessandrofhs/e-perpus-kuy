@@ -42,7 +42,6 @@ class Fine extends Model
         return 'Rp ' . number_format($this->total_amount, 0, ',', '.');
     }
 
-    // Cek apakah denda sudah lunas
     public function getIsPaidAttribute(): bool
     {
         return $this->status === 'paid';

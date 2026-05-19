@@ -36,5 +36,16 @@ class Returns extends Model
     {
         return $this->hasOne(Fine::class, 'return_id');
     }
+    public function getIsLateAttribute(): bool
+    {
+        return $this->actual_return_date->gt($this->loan->due_date);
+    }
 
+    // Hitung hari terlambat saat dikembalikan
+    public function getLateDaysAttribute(): int
+    {
+        if (!$this->is_late) return 0;
+
+        return $this->actual_return_date->diffInDays($this->loan->due_date);
+    }
 }

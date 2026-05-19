@@ -14,7 +14,7 @@ class ReturnController extends Controller
     {
         // Hanya tampilkan loan yang statusnya active atau overdue
         $loans = Loan::with(['user', 'book', 'returns', 'fine'])
-            ->whereIn('status', ['dipinjam', 'telat'])
+            ->whereIn('status', ['active', 'overdue'])
             ->latest()
             ->get();
 
@@ -23,7 +23,6 @@ class ReturnController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi role
         if (Auth::user()->role !== 'admin') {
             return response()->json([
                 'success' => false,
@@ -34,20 +33,19 @@ class ReturnController extends Controller
         $validated = $request->validate([
             'loan_id'            => 'required|exists:loans,id',
             'actual_return_date' => 'required|date',
+            'fine_payment'       => 'nullable|in:paid,unpaid', // ✅
             'notes'              => 'nullable|string|max:255',
         ]);
 
         $loan = Loan::with('book')->findOrFail($validated['loan_id']);
 
-        // Pastikan loan masih active atau overdue
-        if (!in_array($loan->status, ['dipinjam', 'telat'])) {
+        if (!in_array($loan->status, ['active', 'overdue'])) {
             return response()->json([
                 'success' => false,
                 'message' => 'Peminjaman ini tidak dapat diproses'
             ], 400);
         }
 
-        // Pastikan belum pernah dikembalikan
         if ($loan->bookReturn) {
             return response()->json([
                 'success' => false,
@@ -58,45 +56,52 @@ class ReturnController extends Controller
         $actualReturn = \Carbon\Carbon::parse($validated['actual_return_date']);
         $dueDate      = \Carbon\Carbon::parse($loan->due_date);
 
-        // ── Catat pengembalian ───────────────────────────
-        $Returns = Returns::create([
+        // Catat pengembalian
+        $bookReturn = Returns::create([
             'loan_id'            => $loan->id,
             'actual_return_date' => $actualReturn,
             'received_by'        => Auth::id(),
             'notes'              => $validated['notes'] ?? null,
         ]);
 
-        // ── Hitung denda jika terlambat ──────────────────
+        // Hitung denda
         $overdueDays = $actualReturn->gt($dueDate)
             ? $actualReturn->diffInDays($dueDate)
             : 0;
 
+        $fineStatus = null;
+
         if ($overdueDays > 0) {
-            $finePerDay = 2000; // Rp 1.000/hari
+            $finePerDay = 1000;
+            $isPaidNow  = ($validated['fine_payment'] ?? 'unpaid') === 'paid'; // ✅
 
             Fine::create([
                 'loan_id'      => $loan->id,
-                'return_id'    => $Returns->id,
+                'return_id'    => $bookReturn->id,
                 'overdue_days' => $overdueDays,
                 'fine_per_day' => $finePerDay,
                 'total_amount' => $overdueDays * $finePerDay,
-                'status'       => 'unpaid',
+                'status'       => $isPaidNow ? 'paid' : 'unpaid',       // ✅
+                'paid_at'      => $isPaidNow ? now() : null,             // ✅
             ]);
+
+            $fineStatus = $isPaidNow ? 'paid' : 'unpaid';
         }
 
-        // ── Update status loan & kembalikan stok ─────────
         $loan->update(['status' => 'returned']);
         $loan->book->increment('qty');
 
-        $message = $overdueDays > 0
-            ? "Buku dikembalikan dengan keterlambatan {$overdueDays} hari. Denda: Rp " . number_format($overdueDays * 2000, 0, ',', '.')
-            : 'Buku berhasil dikembalikan tepat waktu';
+        $message = match(true) {
+            $overdueDays > 0 && $fineStatus === 'paid'   => "Buku dikembalikan, denda Rp " . number_format($overdueDays * 1000, 0, ',', '.') . " telah dibayar.",
+            $overdueDays > 0 && $fineStatus === 'unpaid' => "Buku dikembalikan, denda Rp " . number_format($overdueDays * 1000, 0, ',', '.') . " belum dibayar.",
+            default                                       => "Buku berhasil dikembalikan tepat waktu.",
+        };
 
         return response()->json([
             'success'      => true,
             'message'      => $message,
             'overdue_days' => $overdueDays,
-            'total_fine'   => $overdueDays * 1000,
+            'fine_status'  => $fineStatus,
         ]);
     }
 }

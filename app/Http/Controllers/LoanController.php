@@ -179,7 +179,7 @@ class LoanController extends Controller
         }
 
         $loan->update([
-            'status'      => 'dipinjam',
+            'status'      => 'active',
             'approved_by' => Auth::id(),
         ]);
 
@@ -204,7 +204,7 @@ class LoanController extends Controller
         $loan->book->increment('qty');
 
         $loan->update([
-            'status'      => 'ditolak',
+            'status'      => 'rejected',
             'approved_by' => Auth::id(),
         ]);
 

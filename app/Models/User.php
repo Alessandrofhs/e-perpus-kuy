@@ -64,4 +64,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Returns::class, 'received_by');
     }
+
+    public function getIsAdminAttribute(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function getIsMemberAttribute(): bool
+    {
+        return $this->role === 'member';
+    }
 }

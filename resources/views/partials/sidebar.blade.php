@@ -44,12 +44,14 @@
             <span class="pc-mtext">Peminjaman</span>
           </a>
         </li>
+        @if(Auth::user()->role == 'admin')
         <li class="pc-item">
           <a href="{{ route('returns.index') }}" class="pc-link">
             <span class="pc-micon"><i class="ti ti-lock"></i></span>
             <span class="pc-mtext">Pengembalian</span>
           </a>
         </li>
+        @endif
       </ul> 
     </div>
   </div>

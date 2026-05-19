@@ -44,14 +44,46 @@ class Loan extends Model
     {
         if (!in_array($this->status, ['active', 'overdue'])) return 0;
 
-        $due = $this->due_date;
+        $due   = \Carbon\Carbon::parse($this->due_date)->startOfDay();
+        $today = \Carbon\Carbon::now('Asia/Jakarta')->startOfDay();
 
-        return today()->gt($due) ? today()->diffInDays($due) : 0;
+        if ($today->gt($due)) {
+            // ✅ Hitung dari due ke today, bukan sebaliknya
+            return (int) $due->diffInDays($today);
+        }
+
+        return 0;
     }
+
 
     // Hitung total denda real-time (sebelum dikembalikan)
     public function getTotalFineAttribute(): int
     {
-        return $this->overdue_days * 1000; // Rp 1.000/hari
+        return $this->overdue_days * 5000; // Rp 5.000/hari
+    }
+
+    // Format status agar lebih rapi
+    public function getStatusLabelAttribute(): string
+    {
+        return match($this->status) {
+            'pending'  => 'Menunggu',
+            'active'   => 'Dipinjam',
+            'returned' => 'Dikembalikan',
+            'rejected' => 'Ditolak',
+            'overdue'  => 'Terlambat',
+            default    => ucfirst($this->status)
+        };
+    }
+
+    public function getStatusBadgeAttribute(): string
+    {
+        return match($this->status) {
+            'pending'  => 'warning',
+            'active'   => 'success',
+            'returned' => 'info',
+            'rejected' => 'danger',
+            'overdue'  => 'dark',
+            default    => 'secondary'
+        };
     }
 }

@@ -56,25 +56,29 @@
                         <td>{{ \Carbon\Carbon::parse($loan->due_date)->format('d M Y') }}</td>
                         <td>{{ $loan->status }}</td>
                         <td>
-                          @if (Auth::user()->role == 'member')
+                          @if (Auth::user()->role == 'member' && $loan->status == 'pending')
                             <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $loan->id }}">
-                              <i class="ti ti-edit"></i> Ubah
+                                <i class="ti ti-edit"></i> Ubah
                             </button>
+
                             <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $loan->id }}">
-                              <i class="ti ti-trash"></i> Hapus
+                                <i class="ti ti-trash"></i> Hapus
                             </button>
-                            <button class="btn btn-sm btn-primary btn-view" data-id="{{ $loan->id }}">
-                              <i class="ti ti-eye"></i> Lihat
-                            </button>
-                          @endif
-                          @if(Auth::user()->role == 'admin')
+                        @endif
+                        @if(Auth::user()->role == 'admin' && $loan->status == 'pending')
+
                             <button class="btn btn-sm btn-success btn-approve" data-id="{{ $loan->id }}">
-                              <i class="ti ti-check"></i> Setuju
+                                <i class="ti ti-check"></i> Setuju
                             </button>
+
                             <button class="btn btn-sm btn-danger btn-reject" data-id="{{ $loan->id }}">
-                              <i class="ti ti-x"></i> Tolak
+                                <i class="ti ti-x"></i> Tolak
                             </button>
-                          @endif
+
+                        @endif
+                        <button class="btn btn-sm btn-primary btn-view" data-id="{{ $loan->id }}">
+                                <i class="ti ti-eye"></i> Lihat
+                        </button>
                         </td>
                       </tr>
                       @endforeach

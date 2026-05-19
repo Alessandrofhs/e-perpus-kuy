@@ -50,9 +50,7 @@
                                     <td>{{ \Carbon\Carbon::parse($loan->due_date)->format('d M Y') }}</td>
                                     <td>
                                         @if ($loan->overdue_days > 0)
-                                            <span class="badge bg-danger">
-                                                {{ $loan->overdue_days }} hari
-                                            </span>
+                                            <span class="badge bg-danger">{{ $loan->overdue_days }} hari</span>
                                         @else
                                             <span class="badge bg-success">Tepat waktu</span>
                                         @endif
@@ -107,15 +105,13 @@
                     {{-- Info peminjaman --}}
                     <div class="alert alert-info">
                         <strong>Peminjam:</strong> <span id="info_name"></span><br>
-                        <strong>Buku:</strong> <span id="info_book"></span><br>
-                        <strong>Tenggat:</strong> <span id="info_due"></span>
+                        <strong>Buku:</strong>     <span id="info_book"></span><br>
+                        <strong>Tenggat:</strong>  <span id="info_due"></span>
                     </div>
 
                     {{-- Tanggal kembali --}}
                     <div class="mb-3">
-                        <label for="actual_return_date" class="form-label">
-                            Tanggal Pengembalian
-                        </label>
+                        <label for="actual_return_date" class="form-label">Tanggal Pengembalian</label>
                         <input type="date"
                                id="actual_return_date"
                                name="actual_return_date"
@@ -125,11 +121,53 @@
                     </div>
 
                     {{-- Preview denda --}}
-                    <div id="finePreview" class="alert alert-warning d-none">
-                        <i class="ti ti-alert-triangle"></i>
-                        Keterlambatan: <strong id="preview_days"></strong> hari<br>
-                        Estimasi denda: <strong id="preview_fine"></strong>
+                    <div id="finePreview" class="d-none">
+                        <hr>
+                        <h6 class="text-danger"><i class="ti ti-alert-triangle"></i> Ada Denda Keterlambatan</h6>
+                        <table class="table table-sm table-borderless mb-3">
+                            <tr>
+                                <td class="text-muted">Keterlambatan</td>
+                                <td>: <strong id="preview_days"></strong> hari</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Denda/Hari</td>
+                                <td>: <strong>Rp 5.000</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Total Denda</td>
+                                <td>: <strong class="text-danger" id="preview_fine"></strong></td>
+                            </tr>
+                        </table>
+
+                        {{-- ✅ Opsi pembayaran langsung --}}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Pembayaran Denda</label>
+                            <div class="d-flex gap-2">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="fine_payment"
+                                           id="payNow"
+                                           value="paid"
+                                           checked>
+                                    <label class="form-check-label text-success fw-bold" for="payNow">
+                                        <i class="ti ti-cash"></i> Bayar Sekarang
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="fine_payment"
+                                           id="payLater"
+                                           value="unpaid">
+                                    <label class="form-check-label text-danger" for="payLater">
+                                        <i class="ti ti-clock"></i> Bayar Nanti
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                     <div id="noFinePreview" class="alert alert-success d-none">
                         <i class="ti ti-circle-check"></i> Pengembalian tepat waktu, tidak ada denda.
                     </div>
@@ -148,14 +186,18 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                 <button class="btn btn-primary" id="saveReturn">
-                    <i class="ti ti-check"></i> Konfirmasi Pengembalian
+                    <i class="ti ti-check"></i> <span id="saveReturnLabel">Konfirmasi Pengembalian</span>
                 </button>
             </div>
         </div>
     </div>
 </div>
 @endsection
-
+@section('styles')
+<style>
+    .swal2-container { z-index: 99999 !important; }
+</style>
+@endsection
 @section('scripts')
 <script>
 $(document).ready(function () {
@@ -167,7 +209,6 @@ $(document).ready(function () {
         lengthChange: true,
         info        : true
     });
-
     // ── Buka modal pengembalian ──────────────────────────
     $(document).on('click', '.btn-return', function () {
         let id   = $(this).data('id');
@@ -180,8 +221,14 @@ $(document).ready(function () {
         $('#info_book').text(book);
         $('#info_due').text(formatDate(due));
         $('#actual_return_date').val('{{ date('Y-m-d') }}');
+        $('#notes').val('');
 
-        // Hitung preview denda dengan tanggal hari ini
+        // Reset preview
+        $('#finePreview').addClass('d-none');
+        $('#noFinePreview').addClass('d-none');
+        $('#saveReturnLabel').text('Konfirmasi Pengembalian');
+        $('#payNow').prop('checked', true);
+
         hitungPreviewDenda(due, '{{ date('Y-m-d') }}');
 
         $('#returnModal').modal('show');
@@ -189,27 +236,38 @@ $(document).ready(function () {
 
     // ── Preview denda saat tanggal berubah ───────────────
     $('#actual_return_date').on('change', function () {
-        let due    = $('#return_loan_id').closest('tr') // ambil dari data attribute
         let dueVal = $('.btn-return[data-id="' + $('#return_loan_id').val() + '"]').data('due');
-
         hitungPreviewDenda(dueVal, $(this).val());
     });
 
+    // ── Update label tombol simpan saat opsi bayar berubah
+    $(document).on('change', 'input[name="fine_payment"]', function () {
+        if ($(this).val() === 'paid') {
+            $('#saveReturnLabel').text('Konfirmasi & Bayar Denda');
+        } else {
+            $('#saveReturnLabel').text('Konfirmasi Pengembalian');
+        }
+    });
+
     function hitungPreviewDenda(dueDate, returnDate) {
-        let due    = new Date(dueDate);
-        let ret    = new Date(returnDate);
-        let diffMs = ret - due;
-        let days   = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        let due  = new Date(dueDate);
+        let ret  = new Date(returnDate);
+        
+        // ✅ due dikurangi ret, bukan ret dikurangi due
+        let days = Math.floor((ret - due) / (1000 * 60 * 60 * 24));
 
         if (days > 0) {
-            let fine = days * 1000;
+            let finePerDay = 5000; // ✅ Sesuaikan dengan blade (Rp 5.000)
+            let fine = days * finePerDay;
             $('#preview_days').text(days);
             $('#preview_fine').text('Rp ' + fine.toLocaleString('id-ID'));
             $('#finePreview').removeClass('d-none');
             $('#noFinePreview').addClass('d-none');
+            $('#saveReturnLabel').text('Konfirmasi & Bayar Denda');
         } else {
             $('#finePreview').addClass('d-none');
             $('#noFinePreview').removeClass('d-none');
+            $('#saveReturnLabel').text('Konfirmasi Pengembalian');
         }
     }
 
@@ -221,12 +279,21 @@ $(document).ready(function () {
 
     // ── Simpan pengembalian ──────────────────────────────
     $('#saveReturn').click(function () {
+        let days = parseInt($('#preview_days').text()) || 0;
+        let isPaying = $('input[name="fine_payment"]:checked').val() === 'paid';
+
+        let confirmText = days > 0
+            ? (isPaying
+                ? `Denda <strong>${$('#preview_fine').text()}</strong> akan langsung dibayar.`
+                : `Denda <strong>${$('#preview_fine').text()}</strong> akan dibayar nanti.`)
+            : 'Pengembalian tepat waktu, tidak ada denda.';
+
         Swal.fire({
-            title             : 'Konfirmasi Pengembalian?',
-            text              : 'Pastikan buku sudah diterima secara fisik.',
-            icon              : 'question',
+            title            : 'Konfirmasi Pengembalian?',
+            html             : `Pastikan buku sudah diterima secara fisik.<br><br>${confirmText}`,
+            icon             : 'question',
             showCancelButton  : true,
-            confirmButtonColor: '#28a745',
+            confirmButtonColor: '#4680ff',
             cancelButtonColor : '#6c757d',
             confirmButtonText : 'Ya, Konfirmasi!',
             cancelButtonText  : 'Batal'
@@ -239,32 +306,32 @@ $(document).ready(function () {
                         _token             : '{{ csrf_token() }}',
                         loan_id            : $('#return_loan_id').val(),
                         actual_return_date : $('#actual_return_date').val(),
+                        fine_payment       : $('input[name="fine_payment"]:checked').val() ?? 'unpaid',
                         notes              : $('#notes').val(),
                     },
                     success: function (response) {
                         Swal.fire({
                             title            : 'Berhasil!',
                             text             : response.message,
-                            icon             : response.overdue_days > 0 ? 'warning' : 'success',
-                            timer            : 3000,
+                            icon             : response.fine_status === 'unpaid' ? 'warning' : 'success',
+                            timer            : 2500,
                             showConfirmButton : false
                         }).then(() => location.reload());
                     },
                     error: function (xhr) {
-                        let response = xhr.responseJSON;
+                        let res = xhr.responseJSON;
                         if (xhr.status === 422) {
-                            $.each(response.errors, function (key, messages) {
+                            $.each(res.errors, function (key, messages) {
                                 toastr.error(messages[0]);
                             });
                         } else {
-                            Swal.fire('Gagal!', response.message, 'error');
+                            Swal.fire('Gagal!', res.message, 'error');
                         }
                     }
                 });
             }
         });
     });
-
 });
 </script>
 @endsection
