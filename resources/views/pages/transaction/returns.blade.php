@@ -10,8 +10,8 @@
                         <h5 class="m-b-10">Pengembalian Buku</h5>
                     </div>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item" aria-current="page">Pengembalian</li>
+                        <li class="breadcrumb-item"><a href="{{ route('returns.index') }}">Pengembalian</a></li>
+                        <li class="breadcrumb-item" aria-current="page">Data</li>
                     </ul>
                 </div>
             </div>

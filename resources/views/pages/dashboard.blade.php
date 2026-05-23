@@ -58,7 +58,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
-                            <h6 class="mb-2 f-w-400 text-muted">Total Peminjaman</h6>
+                            <h6 class="mb-2 f-w-400 text-muted">Total Pinjaman</h6>
                             <h4 class="mb-0">{{ number_format($totalLoan) }}</h4>
                         </div>
                         <div class="avatar bg-light-warning p-2 rounded">
@@ -74,7 +74,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
-                            <h6 class="mb-2 f-w-400 text-muted">Total Pengembalian</h6>
+                            <h6 class="mb-2 f-w-400 text-muted">Total Kembali</h6>
                             <h4 class="mb-0">{{ number_format($totalReturn) }}</h4>
                         </div>
                         <div class="avatar bg-light-danger p-2 rounded">
@@ -129,8 +129,9 @@
                                     <th>Buku</th>
                                     <th>Tenggat</th>
                                     <th>Tanggal Kembali</th>
-                                    <th>Status</th>
+                                    <th>Status Pengembalian</th>
                                     <th>Denda</th>
+                                    <th>Status Bayar</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -138,12 +139,21 @@
                                 @php
                                     $isLate = $return->actual_return_date->gt($return->loan->due_date);
                                 @endphp
+
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $return->loan->user->name }}</td>
                                     <td>{{ $return->loan->book->title }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($return->loan->loan_date)->format('d M Y') }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($return->loan->due_date)->format('d M Y') }}</td>
+
+                                    <td>
+                                        {{ \Carbon\Carbon::parse($return->loan->loan_date)->format('d M Y') }}
+                                    </td>
+
+                                    <td>
+                                        {{ \Carbon\Carbon::parse($return->loan->due_date)->format('d M Y') }}
+                                    </td>
+
+                                    {{-- Status Pengembalian --}}
                                     <td>
                                         @if ($isLate)
                                             <span class="badge bg-danger">Terlambat</span>
@@ -151,6 +161,8 @@
                                             <span class="badge bg-success">Tepat Waktu</span>
                                         @endif
                                     </td>
+
+                                    {{-- Denda --}}
                                     <td>
                                         @if ($return->fine)
                                             <span class="text-danger fw-bold">
@@ -160,10 +172,24 @@
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
+
+                                    {{-- Status Bayar --}}
+                                    <td>
+                                        @if ($return->fine)
+                                            @if ($return->fine->is_paid)
+                                                <span class="badge bg-success">Dibayar</span>
+                                            @else
+                                                <span class="badge bg-warning">Belum Dibayar</span>
+                                            @endif
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
                                 </tr>
+
                                 @empty
                                 <tr>
-                                    <td colspan="7" class="text-center text-muted">
+                                    <td colspan="8" class="text-center text-muted">
                                         Belum ada data pengembalian
                                     </td>
                                 </tr>

@@ -1,5 +1,5 @@
 @extends('layouts.main')
-@section('title', 'Users Maintenance')
+@section('title', 'Manajamen Pengguna')
 @section('content')
 <div class="pc-content">
       <!-- [ breadcrumb ] start -->
@@ -8,11 +8,10 @@
           <div class="row align-items-center">
             <div class="col-md-12">
               <div class="page-header-title">
-                <h5 class="m-b-10">Users</h5>
+                <h5 class="m-b-10">Pengguna</h5>
               </div>
               <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="../dashboard/index.html">Users</a></li>
-                <li class="breadcrumb-item"><a href="javascript: void(0)">Users</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Pengguna</a></li>
                 <li class="breadcrumb-item" aria-current="page">Data</li>
               </ul>
             </div>
@@ -26,10 +25,10 @@
           <div class="col-sm-12">
             <div class="card">
               <div class="card-header">
-                <h5>User Maintenance</h5>
+                <h5>Manajemen Pengguna</h5>
                 <br>
                 <button class="btn btn-primary btn-sm float-right" id="btnAdd">
-                  <i class="ti ti-plus"></i> Add User
+                  <i class="ti ti-plus"></i> Tambah Pengguna
                 </button>
               </div>
               <div class="card-body">
@@ -38,11 +37,11 @@
                     <thead>
                       <tr>
                         <th>No</th>
-                        <th>Name</th>
-                        <th>Major</th>
+                        <th>Nama</th>
+                        <th>Jurusan</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th>Action</th>
+                        <th>Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -55,10 +54,10 @@
                         <td>{{ $user->role }}</td>
                         <td>
                           <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $user->id }}">
-                            <i class="ti ti-edit"></i> Edit
+                            <i class="ti ti-edit"></i> Ubah
                           </button>
                           <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $user->id }}">
-                            <i class="ti ti-trash"></i> Delete
+                            <i class="ti ti-trash"></i> Hapus
                           </button>
                         </td>
                       </tr>
@@ -76,7 +75,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">User Form</h5>
+            <h5 class="modal-title">Form Pengguna</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
 
@@ -92,22 +91,22 @@
 
                 <input type="file" id="photo" name="photo" class="d-none" accept="image/*">
                 <div>
-                  <small>Click to change the picture</small>
+                  <small>Klik untuk ubah gambar</small>
                 </div>
               </div>
 
               <div class="mb-2">
-                <input type="text" id="name" name="name" class="form-control" placeholder="Name">
+                <input type="text" id="name" name="name" class="form-control" placeholder="Nama">
               </div>
 
               <div class="mb-2">
                 <select id="major" name="major" class="form-control">
-                  <option value="" class="disabled">Select Major</option>
-                  <option value="siio">Sistem Informasi Industri Otomotif</option>
-                  <option value="abo">Administrasi Bisnis Otomotif</option>
-                  <option value="tro">Teknik Rekayasa Otomotif</option>
-                  <option value="tio">Teknik Industri Otomotif</option>
-                  <option value="tkp">Teknik Kimia Polimer</option>
+                  <option value="" class="disabled">Pilih Jurusan</option>
+                  <option value="Sistem Informasi Industri Otomotif">Sistem Informasi Industri Otomotif</option>
+                  <option value="Administrasi Bisnis Otomotif">Administrasi Bisnis Otomotif</option>
+                  <option value="Teknik Rekayasa Otomotif">Teknik Rekayasa Otomotif</option>
+                  <option value="Teknik Industri Otomotif">Teknik Industri Otomotif</option>
+                  <option value="Teknik Kimia Polimer">Teknik Kimia Polimer</option>
                 </select>
               </div>
 
@@ -117,7 +116,7 @@
 
               <div class="mb-2">
                 <select id="role" name="role" class="form-control">
-                  <option value="" class="disabled">Select Role</option>
+                  <option value="" class="disabled">Pilih Role</option>
                   <option value="admin">Admin</option>
                   <option value="member">Member</option>
                 </select>
@@ -127,14 +126,14 @@
               </div>
 
               <div class="mb-2">
-                <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Confirm Password">
+                <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Konfirmasi Password">
               </div>
             </form>
           </div>
 
           <div class="modal-footer">
-            <button class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-x" style="font-size:12px;"></i> Close</button>
-            <button class="btn btn-primary" id="saveUser"><i class="fa fa-save fa-sm" style="font-size:12px;"></i> Save</button>
+            <button class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-x" style="font-size:12px;"></i> Tutup</button>
+            <button class="btn btn-primary" id="saveUser"><i class="fa fa-save fa-sm" style="font-size:12px;"></i> Simpan</button>
           </div>
         </div>
       </div>

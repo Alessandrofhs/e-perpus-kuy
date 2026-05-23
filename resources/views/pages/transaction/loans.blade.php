@@ -1,5 +1,5 @@
 @extends('layouts.main')
-@section('title', 'Loans Maintenance')
+@section('title', 'Peminjaman Buku')
 @section('content')
 <div class="pc-content">
       <!-- [ breadcrumb ] start -->
@@ -11,8 +11,7 @@
                 <h5 class="m-b-10">Peminjaman</h5>
               </div>
               <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Peminjaman</a></li>
-                <li class="breadcrumb-item"><a href="javascript: void(0)">Peminjaman</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('loans.index') }}">Peminjaman</a></li>
                 <li class="breadcrumb-item" aria-current="page">Data</li>
               </ul>
             </div>

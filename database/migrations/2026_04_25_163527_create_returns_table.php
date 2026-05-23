@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('loan_id')->constrained()->onDelete('cascade');
             $table->date('actual_return_date');
             $table->foreignId('received_by')->constrained('users')->onDelete('cascade');
-            $table->text('notes');
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

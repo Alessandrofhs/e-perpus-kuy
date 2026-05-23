@@ -1,5 +1,5 @@
 @extends('layouts.main')
-@section('title', 'Books Maintenance')
+@section('title', 'Manajemen Buku')
 @section('content')
 <div class="pc-content">
       <!-- [ breadcrumb ] start -->
@@ -8,11 +8,10 @@
           <div class="row align-items-center">
             <div class="col-md-12">
               <div class="page-header-title">
-                <h5 class="m-b-10">Books</h5>
+                <h5 class="m-b-10">Buku</h5>
               </div>
               <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="../dashboard/index.html">Books</a></li>
-                <li class="breadcrumb-item"><a href="javascript: void(0)">Books</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('books.index') }}">Buku</a></li>
                 <li class="breadcrumb-item" aria-current="page">Data</li>
               </ul>
             </div>
@@ -26,10 +25,10 @@
           <div class="col-sm-12">
             <div class="card">
               <div class="card-header">
-                <h5>Book Maintenance</h5>
+                <h5>Manajemen Buku</h5>
                 <br>
                 <button class="btn btn-primary btn-sm float-right" id="btnAdd">
-                  <i class="ti ti-plus"></i> Add Book
+                  <i class="ti ti-plus"></i> Tambah Buku
                 </button>
               </div>
               <div class="card-body">
@@ -38,12 +37,12 @@
                     <thead>
                       <tr>
                         <th>No</th>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Publisher</th>
-                        <th>Year</th>
-                        <th>Qty</th>
-                        <th>Action</th>
+                        <th>Judul</th>
+                        <th>Penulis</th>
+                        <th>Penerbit</th>
+                        <th>Tahun</th>
+                        <th>Stok</th>
+                        <th>Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -57,10 +56,10 @@
                         <td>{{ $book->qty }}</td>
                         <td>
                           <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $book->id }}">
-                            <i class="ti ti-edit"></i> Edit
+                            <i class="ti ti-edit"></i> Ubah
                           </button>
                           <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $book->id }}">
-                            <i class="ti ti-trash"></i> Delete
+                            <i class="ti ti-trash"></i> Hapus
                           </button>
                         </td>
                       </tr>
@@ -79,7 +78,7 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title" id="bookModalTitle">Add Book</h5>
+                    <h5 class="modal-title" id="bookModalTitle">Tambah Buku</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -103,27 +102,27 @@
 
                     <!-- Title -->
                     <div class="mb-2">
-                        <input type="text" id="title" name="title" class="form-control" placeholder="Title" required>
+                        <input type="text" id="title" name="title" class="form-control" placeholder="Judul" required>
                     </div>
 
                     <!-- Author -->
                     <div class="mb-2">
-                        <input type="text" id="author" name="author" class="form-control" placeholder="Author" required>
+                        <input type="text" id="author" name="author" class="form-control" placeholder="Penulis" required>
                     </div>
 
                     <!-- Publisher -->
                     <div class="mb-2">
-                        <input type="text" id="publisher" name="publisher" class="form-control" placeholder="Publisher">
+                        <input type="text" id="publisher" name="publisher" class="form-control" placeholder="Penerbit">
                     </div>
 
                     <!-- Year -->
                     <div class="mb-2">
-                        <input type="date" id="published_year" name="published_year" class="form-control" placeholder="Published Year">
+                        <input type="date" id="published_year" name="published_year" class="form-control" placeholder="Tahun Terbit">
                     </div>
 
                     <!-- Qty -->
                     <div class="mb-2">
-                        <input type="number" id="qty" name="qty" class="form-control" placeholder="Quantity" min="1">
+                        <input type="number" id="qty" name="qty" class="form-control" placeholder="Stok" min="1">
                     </div>
 
                     </form>
@@ -131,11 +130,11 @@
 
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fa fa-times" style="font-size:12px;"></i> Close
+                    <i class="fa fa-times" style="font-size:12px;"></i> Tutup
                     </button>
 
                     <button class="btn btn-primary" id="saveBook">
-                    <i class="fa fa-save" style="font-size:12px;"></i> Save
+                    <i class="fa fa-save" style="font-size:12px;"></i> Simpan
                     </button>
                 </div>
             </div>

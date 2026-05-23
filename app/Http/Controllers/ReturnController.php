@@ -33,7 +33,7 @@ class ReturnController extends Controller
         $validated = $request->validate([
             'loan_id'            => 'required|exists:loans,id',
             'actual_return_date' => 'required|date',
-            'fine_payment'       => 'nullable|in:paid,unpaid', // ✅
+            'fine_payment'       => 'nullable|in:paid,unpaid',
             'notes'              => 'nullable|string|max:255',
         ]);
 
@@ -53,8 +53,9 @@ class ReturnController extends Controller
             ], 400);
         }
 
-        $actualReturn = \Carbon\Carbon::parse($validated['actual_return_date']);
-        $dueDate      = \Carbon\Carbon::parse($loan->due_date);
+        // ✅ Tambah startOfDay() agar tidak terpengaruh jam
+        $actualReturn = \Carbon\Carbon::parse($validated['actual_return_date'])->startOfDay();
+        $dueDate      = \Carbon\Carbon::parse($loan->due_date)->startOfDay();
 
         // Catat pengembalian
         $bookReturn = Returns::create([
@@ -64,16 +65,18 @@ class ReturnController extends Controller
             'notes'              => $validated['notes'] ?? null,
         ]);
 
-        // Hitung denda
+        // ✅ Arah diffInDays diperbaiki: dari due ke actual
         $overdueDays = $actualReturn->gt($dueDate)
-            ? $actualReturn->diffInDays($dueDate)
+            ? (int) $dueDate->diffInDays($actualReturn)
             : 0;
 
         $fineStatus = null;
 
+        $fineStatus  = null;
+        $finePerDay  = 5000; // ✅ Definisikan di luar if
+
         if ($overdueDays > 0) {
-            $finePerDay = 1000;
-            $isPaidNow  = ($validated['fine_payment'] ?? 'unpaid') === 'paid'; // ✅
+            $isPaidNow = ($validated['fine_payment'] ?? 'unpaid') === 'paid';
 
             Fine::create([
                 'loan_id'      => $loan->id,
@@ -81,8 +84,8 @@ class ReturnController extends Controller
                 'overdue_days' => $overdueDays,
                 'fine_per_day' => $finePerDay,
                 'total_amount' => $overdueDays * $finePerDay,
-                'status'       => $isPaidNow ? 'paid' : 'unpaid',       // ✅
-                'paid_at'      => $isPaidNow ? now() : null,             // ✅
+                'status'       => $isPaidNow ? 'paid' : 'unpaid',
+                'paid_at'      => $isPaidNow ? now() : null,
             ]);
 
             $fineStatus = $isPaidNow ? 'paid' : 'unpaid';
@@ -92,8 +95,8 @@ class ReturnController extends Controller
         $loan->book->increment('qty');
 
         $message = match(true) {
-            $overdueDays > 0 && $fineStatus === 'paid'   => "Buku dikembalikan, denda Rp " . number_format($overdueDays * 1000, 0, ',', '.') . " telah dibayar.",
-            $overdueDays > 0 && $fineStatus === 'unpaid' => "Buku dikembalikan, denda Rp " . number_format($overdueDays * 1000, 0, ',', '.') . " belum dibayar.",
+            $overdueDays > 0 && $fineStatus === 'paid'   => "Buku dikembalikan, denda Rp " . number_format($overdueDays * $finePerDay, 0, ',', '.') . " telah dibayar.",
+            $overdueDays > 0 && $fineStatus === 'unpaid' => "Buku dikembalikan, denda Rp " . number_format($overdueDays * $finePerDay, 0, ',', '.') . " belum dibayar.",
             default                                       => "Buku berhasil dikembalikan tepat waktu.",
         };
 
