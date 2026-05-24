@@ -65,11 +65,11 @@
                 <label class="form-label">Jurusan</label>
                 <select name="major" class="form-control">
                   <option value="" disabled selected>Pilih jurusan</option>
-                  <option value="tkp">Teknik Kimia Polimer</option>
-                  <option value="siio">Sistem Informasi Industri Otomotif</option>
-                  <option value="tio">Teknik Industri Otomotif</option>
-                  <option value="tro">Teknik Rekayasa Otomotif</option>
-                  <option value="abo">Administasi Bisnis Otomotif</option>
+                  <option value="Sistem Informasi Industri Otomotif">Sistem Informasi Industri Otomotif</option>
+                  <option value="Administrasi Bisnis Otomotif">Administrasi Bisnis Otomotif</option>
+                  <option value="Teknik Rekayasa Otomotif">Teknik Rekayasa Otomotif</option>
+                  <option value="Teknik Industri Otomotif">Teknik Industri Otomotif</option>
+                  <option value="Teknik Kimia Polimer">Teknik Kimia Polimer</option>
                 </select>
               </div>
               <div class="form-group mb-3">

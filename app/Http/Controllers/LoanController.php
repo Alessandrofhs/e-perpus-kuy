@@ -7,22 +7,32 @@ use App\Models\Book;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\NotificationHelper;
 use Illuminate\Support\Carbon;
 
 class LoanController extends Controller
 {
     public function index() {
-        $loans = Loan::with(['user', 'approver', 'book'])->get();
+        $user = Auth::user();
+
+        // ✅ Member hanya lihat punya sendiri, admin lihat semua
+        $loans = Loan::with(['user', 'approver', 'book'])
+            ->when($user->role === 'member', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })
+            ->latest()
+            ->get();
+
         $books = Book::orderBy('title', 'ASC')->get();
 
         $borrowers = User::where('role', 'member')
                         ->orderBy('name', 'ASC')
                         ->get();
 
-        // User dengan role admin
         $approvers = User::where('role', 'admin')
                         ->orderBy('name', 'ASC')
                         ->get();
+
         return view('pages.transaction.loans', compact('loans', 'books', 'borrowers', 'approvers'));
     }
     public function store(Request $request)
@@ -73,7 +83,7 @@ class LoanController extends Controller
         }
 
         // ✅ Simpan dengan due_date
-        Loan::create([
+        $loan = Loan::create([
             'user_id'   => $user->id,
             'book_id'   => $validated['book_id'],
             'loan_date' => $validated['loan_date'],
@@ -84,6 +94,8 @@ class LoanController extends Controller
         // ✅ Kurangi stok buku
         $book->decrement('qty');
 
+        NotificationHelper::loanCreated($loan->load('user', 'book'));
+
         return response()->json([
             'success' => true,
             'message' => 'Peminjaman berhasil diajukan, menunggu persetujuan'
@@ -92,7 +104,7 @@ class LoanController extends Controller
 
     public function show($id)
     {
-        $loan = Loan::with(['book', 'user'])->findOrFail($id);
+        $loan = Loan::with(['book', 'user', 'approver'])->findOrFail($id);
 
         return response()->json([
             'success' => true,
@@ -182,7 +194,9 @@ class LoanController extends Controller
             'status'      => 'active',
             'approved_by' => Auth::id(),
         ]);
-
+        
+        NotificationHelper::loanApproved($loan->load('book'));
+        
         return response()->json([
             'success' => true,
             'message' => 'Peminjaman berhasil disetujui'
@@ -207,7 +221,7 @@ class LoanController extends Controller
             'status'      => 'rejected',
             'approved_by' => Auth::id(),
         ]);
-
+        NotificationHelper::loanRejected($loan->load('book'));
         return response()->json([
             'success' => true,
             'message' => 'Peminjaman berhasil ditolak'

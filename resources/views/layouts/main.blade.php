@@ -74,6 +74,111 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script>
+    $(document).ready(function () {
+
+        function timeAgo(dateStr) {
+            let date  = new Date(dateStr);
+            let now   = new Date();
+            let diff  = Math.floor((now - date) / 1000);
+
+            if (diff < 60)         return diff + ' detik lalu';
+            if (diff < 3600)       return Math.floor(diff / 60) + ' menit lalu';
+            if (diff < 86400)      return Math.floor(diff / 3600) + ' jam lalu';
+            return Math.floor(diff / 86400) + ' hari lalu';
+        }
+
+        function fetchNotifications() {
+            $.ajax({
+                url    : '/notifications',
+                type   : 'GET',
+                success: function (res) {
+                    console.log(res);
+                    let count = res.unread_count;
+                    let notifs = res.notifications;
+
+                    // ── Update badge ─────────────────────────
+                    if (count > 0) {
+                        $('#notifBadge').text(count).show();
+                    } else {
+                        $('#notifBadge').hide();
+                    }
+
+                    // ── Render list ──────────────────────────
+                    if (notifs.length === 0) {
+                        $('#notifList').html('');
+                        $('#notifEmpty').show();
+                    } else {
+                        $('#notifEmpty').hide();
+
+                        let html = '';
+                        notifs.forEach(function (n) {
+                            let isRead  = n.read_at !== null;
+                            let bgStyle = isRead ? '' : 'background-color: #f0f4ff;';
+
+                            let icon = {
+                                'loan_approved' : 'ti-circle-check text-success',
+                                'loan_rejected' : 'ti-circle-x text-danger',
+                                'loan_created'  : 'ti-book text-primary',
+                                'returned'      : 'ti-arrow-back-up text-info',
+                                'fine'          : 'ti-cash text-warning',
+                            }[n.type] || 'ti-bell text-secondary';
+
+                            html += `
+                                <a class="list-group-item list-group-item-action notif-item"
+                                href="#"
+                                data-id="${n.id}"
+                                style="${bgStyle}">
+                                    <div class="d-flex align-items-start">
+                                        <div class="flex-shrink-0 me-2 mt-1">
+                                            <i class="ti ${icon}" style="font-size:20px;"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between">
+                                                <p class="mb-1 fw-bold" style="font-size:13px;">${n.title}</p>
+                                                <small class="text-muted ms-2 text-nowrap">${timeAgo(n.created_at)}</small>
+                                            </div>
+                                            <p class="mb-0 text-muted" style="font-size:12px;">${n.message}</p>
+                                        </div>
+                                    </div>
+                                </a>`;
+                        });
+
+                        $('#notifList').html(html);
+                    }
+                }
+            });
+        }
+
+        // ── Jalankan saat load & tiap 30 detik ──────────────
+        fetchNotifications();
+        setInterval(fetchNotifications, 30000);
+
+        // ── Klik notif → tandai dibaca ───────────────────────
+        $(document).on('click', '.notif-item', function (e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+
+            $.post('/notifications/read/' + id, {
+                _token: '{{ csrf_token() }}'
+            }, function () {
+                fetchNotifications();
+            });
+        });
+
+        // ── Tandai semua dibaca ──────────────────────────────
+        $(document).on('click', '#readAllNotif, #readAllNotif2', function (e) {
+            e.preventDefault();
+
+            $.post('/notifications/read-all', {
+                _token: '{{ csrf_token() }}'
+            }, function () {
+                fetchNotifications();
+            });
+        });
+
+    });
+  </script>
   @yield('scripts')
 
   

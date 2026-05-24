@@ -6,6 +6,7 @@ use App\Http\Controllers\LoanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -36,6 +37,13 @@ Route::middleware('auth')->group(function () {
     Route::prefix('returns')->middleware('auth')->group(function () {
         Route::get('/',        [ReturnController::class, 'index'])->name('returns.index');
         Route::post('/store',  [ReturnController::class, 'store'])->name('returns.store');
+    });
+
+    // routes/web.php
+    Route::prefix('notifications')->middleware('auth')->group(function () {
+        Route::get('/',           [NotificationController::class, 'index'])->name('notifications.index');
+        Route::post('/read/{id}', [NotificationController::class, 'read'])->name('notifications.read');
+        Route::post('/read-all',  [NotificationController::class, 'readAll'])->name('notifications.readAll');
     });
 });
 

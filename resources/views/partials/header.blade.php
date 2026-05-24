@@ -13,85 +13,60 @@
             <i class="ti ti-menu-2"></i>
         </a>
         </li>
-    </ul>
-    </div>
-    <!-- [Mobile Media Block end] -->
-    <div class="ms-auto">
-    <ul class="list-unstyled">
+            </ul>
+            </div>
+            <!-- [Mobile Media Block end] -->
+            <div class="ms-auto">
+            <ul class="list-unstyled">
         <li class="dropdown pc-h-item">
-        <a
-            class="pc-head-link dropdown-toggle arrow-none me-0"
-            data-bs-toggle="dropdown"
-            href="#"
-            role="button"
-            aria-haspopup="false"
-            aria-expanded="false"
-        >
-            <i class="ti ti-mail"></i>
+        <a class="pc-head-link dropdown-toggle arrow-none me-0"
+        data-bs-toggle="dropdown"
+        href="#"
+        role="button"
+        aria-haspopup="false"
+        aria-expanded="false"
+        id="notifToggle">
+            <i class="ti ti-bell"></i>
+            {{-- Badge jumlah notif belum dibaca --}}
+            <span class="badge bg-danger rounded-pill position-absolute"
+                id="notifBadge"
+                style="display:none; font-size:9px; top:4px; right:4px;">
+            </span>
         </a>
-        <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
-            <div class="dropdown-header d-flex align-items-center justify-content-between">
-            <h5 class="m-0">Message</h5>
-            <a href="#!" class="pc-head-link bg-transparent"><i class="ti ti-x text-danger"></i></a>
-            </div>
-            <div class="dropdown-divider"></div>
-            <div class="dropdown-header px-0 text-wrap header-notification-scroll position-relative" style="max-height: calc(100vh - 215px)">
-            <div class="list-group list-group-flush w-100">
-                <a class="list-group-item list-group-item-action">
-                <div class="d-flex">
-                    <div class="flex-shrink-0">
-                    <img src="{{ asset('templates/dist/assets/images/user/avatar-2.jpg') }}" alt="user-image" class="user-avtar">
+
+            <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
+                {{-- Header --}}
+                <div class="dropdown-header d-flex align-items-center justify-content-between">
+                    <h5 class="m-0">Notifikasi</h5>
+                    <a href="#" id="readAllNotif" class="text-muted" style="font-size:12px;">
+                        Tandai semua dibaca
+                    </a>
+                </div>
+
+                <div class="dropdown-divider"></div>
+
+                {{-- List Notifikasi --}}
+                <div class="dropdown-header px-0 text-wrap header-notification-scroll position-relative"
+                    style="max-height: calc(100vh - 215px)">
+                    <div class="list-group list-group-flush w-100" id="notifList">
+                        {{-- Diisi oleh JS --}}
                     </div>
-                    <div class="flex-grow-1 ms-1">
-                    <span class="float-end text-muted">3:00 AM</span>
-                    <p class="text-body mb-1">It's <b>Cristina danny's</b> birthday today.</p>
-                    <span class="text-muted">2 min ago</span>
+
+                    {{-- Kosong --}}
+                    <div id="notifEmpty" class="text-center py-4" style="display:none;">
+                        <i class="ti ti-bell-off text-muted" style="font-size:32px;"></i>
+                        <p class="text-muted mt-2 mb-0" style="font-size:13px;">Tidak ada notifikasi</p>
                     </div>
                 </div>
-                </a>
-                <a class="list-group-item list-group-item-action">
-                <div class="d-flex">
-                    <div class="flex-shrink-0">
-                    <img src="{{ asset('templates/dist/assets/images/user/avatar-1.jpg') }}" alt="user-image" class="user-avtar">
-                    </div>
-                    <div class="flex-grow-1 ms-1">
-                    <span class="float-end text-muted">6:00 PM</span>
-                    <p class="text-body mb-1"><b>Aida Burg</b> commented your post.</p>
-                    <span class="text-muted">5 August</span>
-                    </div>
+
+                <div class="dropdown-divider"></div>
+
+                <div class="text-center py-2">
+                    <a href="#" id="readAllNotif2" class="link-primary" style="font-size:13px;">
+                        Tandai semua sudah dibaca
+                    </a>
                 </div>
-                </a>
-                <a class="list-group-item list-group-item-action">
-                <div class="d-flex">
-                    <div class="flex-shrink-0">
-                    <img src="{{ asset('templates/dist/assets/images/user/avatar-3.jpg') }}" alt="user-image" class="user-avtar">
-                    </div>
-                    <div class="flex-grow-1 ms-1">
-                    <span class="float-end text-muted">2:45 PM</span>
-                    <p class="text-body mb-1"><b>There was a failure to your setup.</b></p>
-                    <span class="text-muted">7 hours ago</span>
-                    </div>
-                </div>
-                </a>
-                <a class="list-group-item list-group-item-action">
-                <div class="d-flex">
-                    <div class="flex-shrink-0">
-                    <img src="{{ asset('templates/dist/assets/images/user/avatar-3.jpg') }}" alt="user-image" class="user-avtar">
-                    </div>
-                    <div class="flex-grow-1 ms-1">
-                    <span class="float-end text-muted">9:10 PM</span>
-                    <p class="text-body mb-1"><b>Cristina Danny </b> invited to join <b> Meeting.</b></p>
-                    <span class="text-muted">Daily scrum meeting time</span>
-                    </div>
-                </div>
-                </a>
             </div>
-            </div>
-            <div class="dropdown-divider"></div>
-            <div class="text-center py-2">
-            <a href="#!" class="link-primary">View all</a>
-            </div>
-        </div>
         </li>
         <li class="dropdown pc-h-item header-user-profile">
         <a

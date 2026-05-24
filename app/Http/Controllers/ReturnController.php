@@ -6,6 +6,7 @@ use App\Models\Fine;
 use Illuminate\Http\Request;
 use App\Models\Loan;
 use App\Models\Returns;
+use App\Helpers\NotificationHelper;
 use Illuminate\Support\Facades\Auth;
 
 class ReturnController extends Controller
@@ -46,7 +47,7 @@ class ReturnController extends Controller
             ], 400);
         }
 
-        if ($loan->bookReturn) {
+        if ($loan->returns) {
             return response()->json([
                 'success' => false,
                 'message' => 'Buku ini sudah pernah dikembalikan'
@@ -70,8 +71,6 @@ class ReturnController extends Controller
             ? (int) $dueDate->diffInDays($actualReturn)
             : 0;
 
-        $fineStatus = null;
-
         $fineStatus  = null;
         $finePerDay  = 5000; // ✅ Definisikan di luar if
 
@@ -93,13 +92,13 @@ class ReturnController extends Controller
 
         $loan->update(['status' => 'returned']);
         $loan->book->increment('qty');
-
+        NotificationHelper::bookReturned($loan->load('book'), $overdueDays, $finePerDay);
         $message = match(true) {
             $overdueDays > 0 && $fineStatus === 'paid'   => "Buku dikembalikan, denda Rp " . number_format($overdueDays * $finePerDay, 0, ',', '.') . " telah dibayar.",
             $overdueDays > 0 && $fineStatus === 'unpaid' => "Buku dikembalikan, denda Rp " . number_format($overdueDays * $finePerDay, 0, ',', '.') . " belum dibayar.",
             default                                       => "Buku berhasil dikembalikan tepat waktu.",
         };
-
+        
         return response()->json([
             'success'      => true,
             'message'      => $message,

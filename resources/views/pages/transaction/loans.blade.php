@@ -164,6 +164,48 @@
         </div>
     </div>
 </div>
+{{-- Modal Detail Peminjaman --}}
+<div class="modal fade" id="viewModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detail Peminjaman</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-borderless table-sm">
+                    <tr>
+                        <td class="text-muted" width="40%">Peminjam</td>
+                        <td>: <strong id="view_name"></strong></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Buku</td>
+                        <td>: <strong id="view_book"></strong></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Tanggal Pinjam</td>
+                        <td>: <strong id="view_loan_date"></strong></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Tenggat Waktu</td>
+                        <td>: <strong id="view_due_date"></strong></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Status</td>
+                        <td>: <strong id="view_status"></strong></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Disetujui Oleh</td>
+                        <td>: <strong id="view_approved_by"></strong></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-times" style="font-size:12px;"></i>Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('scripts')
 <script>
@@ -197,6 +239,38 @@
         width: '100%',
         placeholder: $(this).data('placeholder'),
         allowClear: true
+    });
+
+    $(document).on('click', '.btn-view', function () {
+        let id = $(this).data('id');
+
+        $.ajax({
+            url  : '/loans/' + id,
+            type : 'GET',
+            success: function (response) {
+                let loan = response.data;
+
+                let statusBadge = {
+                    'pending'  : '<span class="badge bg-warning">Menunggu</span>',
+                    'active'   : '<span class="badge bg-success">Dipinjam</span>',
+                    'returned' : '<span class="badge bg-info">Dikembalikan</span>',
+                    'rejected' : '<span class="badge bg-danger">Ditolak</span>',
+                    'overdue'  : '<span class="badge bg-dark">Terlambat</span>',
+                }[loan.status] || loan.status;
+
+                $('#view_name').text(loan.user.name);
+                $('#view_book').text(loan.book.title);
+                $('#view_loan_date').text(formatDate(loan.loan_date));
+                $('#view_due_date').text(formatDate(loan.due_date));
+                $('#view_status').html(statusBadge);
+                $('#view_approved_by').text(loan.approver ? loan.approver?.name ?? '-' : '-');
+
+                $('#viewModal').modal('show');
+            },
+            error: function () {
+                toastr.error('Gagal mengambil data peminjaman');
+            }
+        });
     });
 
     $('#saveLoan').click(function (e) {
@@ -398,6 +472,13 @@
                 .prop('disabled', false);
         }
     });
+    
+    function formatDate(dateStr) {
+        if (!dateStr) return '-';
+        let date    = new Date(dateStr);
+        let options = { day: '2-digit', month: 'long', year: 'numeric' };
+        return date.toLocaleDateString('id-ID', options);
+    }
   });
 </script>
 @endsection
